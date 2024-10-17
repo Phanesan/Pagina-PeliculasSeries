@@ -1,6 +1,6 @@
 <template>
   <p>Login View</p>
-  <button @click="$emit('changePage', 'Home')">Home</button>
+  <button @click="$emit('changePage', 'DetailMovie')">Detalles movie</button>
 </template>
 
 <script>

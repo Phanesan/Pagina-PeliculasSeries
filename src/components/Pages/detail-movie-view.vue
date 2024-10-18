@@ -35,6 +35,10 @@
           </p>
         </div>
 
+        <button class="trailer-button" @click="watchTrailer">
+          🎬 Ver Tráiler
+        </button>
+
         <p class="movie-genres">
           <strong>Géneros:</strong>
           <span v-for="(genre, index) in movie.genres" :key="genre.id">
@@ -44,6 +48,19 @@
             <span v-if="index < movie.genres.length - 1">, </span>
           </span>
         </p>
+
+        <div class="movie-keywords">
+          <h3>Palabras clave</h3>
+          <div class="keywords-list">
+            <button
+              v-for="(keyword, index) in keywords"
+              :key="keyword.id"
+              class="keyword"
+            >
+              {{ keyword.name }}
+            </button>
+          </div>
+        </div>
 
         <p class="movie-overview">
           <strong>Sinopsis:</strong> <span>{{ movie.overview }}</span>
@@ -104,11 +121,12 @@ export default {
       movie: {},
       cast: [],
       userRating: '',
+      keywords: [], // Nueva variable para almacenar las palabras clave
     }
   },
   methods: {
     fetchMovieDetails() {
-      const movieId = 117
+      const movieId = 117 // Usa el ID de la película
       fetch(
         `https://api.themoviedb.org/3/movie/${movieId}?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
       )
@@ -118,6 +136,7 @@ export default {
           document.title = this.movie.title
           this.loadRating(movieId)
           this.fetchMovieCast(movieId)
+          this.fetchMovieKeywords(movieId) // Llamada para obtener las palabras clave
         })
         .catch(error => {
           console.error(
@@ -136,6 +155,45 @@ export default {
         .catch(error => {
           console.error('Error al obtener el reparto de la película: ' + error)
         })
+    },
+    fetchMovieKeywords(movieId) {
+      fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/keywords?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+      )
+        .then(response => response.json())
+        .then(data => {
+          this.keywords = data.keywords
+        })
+        .catch(error => {
+          console.error('Error al obtener las palabras clave: ' + error)
+        })
+    },
+    fetchMovieTrailer(movieId) {
+      fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+      )
+        .then(response => response.json())
+        .then(data => {
+          const trailer = data.results.find(
+            video => video.type === 'Trailer' && video.site === 'YouTube',
+          )
+          if (trailer) {
+            this.trailerKey = trailer.key // Guarda el ID del tráiler
+          }
+        })
+        .catch(error => {
+          console.error('Error al obtener el tráiler: ' + error)
+        })
+    },
+    watchTrailer() {
+      if (this.trailerKey) {
+        window.open(
+          `https://www.youtube.com/watch?v=${this.trailerKey}`,
+          '_blank',
+        )
+      } else {
+        alert('No se encontró el tráiler para esta película.')
+      }
     },
     goBack() {
       window.history.back()
@@ -162,6 +220,7 @@ export default {
       alert('Tu calificación ha sido eliminada.')
     },
     redirectToCategory(genreId) {
+      // Redireccionar a la pantalla de la categoría
       this.$emit('changePage', 'DetailCategory', { genreId })
     },
   },
@@ -305,5 +364,18 @@ body {
   height: 150px;
   object-fit: cover;
   border-radius: 5px;
+}
+
+.trailer-button {
+  background-color: #3d3d3d;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.trailer-button:hover {
+  background-color: #1d1d1d;
 }
 </style>

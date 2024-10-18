@@ -18,7 +18,9 @@ import DetailCategory from './components/Pages/detail-category-view.vue'
       <p>Peliculas</p>
     </div>
   </header>
-  <component :is="currentPage" @changePage="changePage"></component>
+  <div class="view">
+    <component :is="currentPage" @changePage="changePage"></component>
+  </div>
 </template>
 
 <script>
@@ -46,16 +48,23 @@ export default {
 }
 </script>
 
-<style>
+<style scooped>
 header {
   display: flex;
   align-items: center;
   justify-content: start;
   padding: 1rem;
+  max-height: 4.5rem;
   background-color: var(--color-primary);
+  width: 100%;
+  position: fixed;
 
   .header-section {
     margin-right: 2.5rem;
   }
+}
+
+.view {
+  padding-top: 4.28rem !important;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div class="container">
+      <img src="../../assets/images/banner.jpg" class="banner" />
       <h1>Tendencias</h1>
       <div class="card-container" ref="carousel">
         <div
@@ -48,20 +49,17 @@
       <div class="card-container" ref="carousel">
         <div
           class="card"
-          v-for="(onAirShow, index) in freeWatch"
+          v-for="(movie, index) in freeWatch"
           :key="index"
-          @click="goToMovie(onAirShow.id)"
+          @click="goToMovie(movie.id)"
         >
-          <img
-            :src="getImageUrl(onAirShow.poster_path)"
-            alt="On Air TV Show Poster"
-          />
+          <img :src="getImageUrl(movie.poster_path)" alt="Movie Poster" />
           <div>
-            <h3>{{ onAirShow.name }}</h3>
+            <h3>{{ movie.title }}</h3>
             <p>Fecha de estreno</p>
-            <p>{{ onAirShow.first_air_date }}</p>
+            <p>{{ movie.release_date }}</p>
             <p>Popularidad</p>
-            <p>{{ onAirShow.vote_average.toFixed(1) }}</p>
+            <p>{{ movie.vote_average.toFixed(1) }}</p>
           </div>
           <a href="#" class="button">Ver Detalles</a>
         </div>
@@ -99,6 +97,7 @@ export default {
       topRatedMovies: [],
       popularMovies: [],
       freeWatch: [],
+      topRatedTVShows: [],
     }
   },
   methods: {
@@ -200,7 +199,7 @@ export default {
       }
 
       fetch(
-        'https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1',
+        'https://api.themoviedb.org/3/discover/movie?with_watch_monetization_types=free&watch_region=US',
         requestOptions,
       )
         .then(response => response.json())
@@ -295,5 +294,14 @@ h1 {
 
 .button:hover {
   background-color: rgb(8, 16, 34);
+}
+
+.banner {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
 }
 </style>

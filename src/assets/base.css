@@ -15,6 +15,7 @@
   --color-primary: var(--slate-blue);
   --color-secondary: var(--oxford-blue);
   --color-accent: var(--palatinate-blue);
+  --color-error: #ff0000;
 }
 
 *,

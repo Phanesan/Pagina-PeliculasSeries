@@ -28,6 +28,10 @@ import { ref } from 'vue'
         />
       </div>
 
+      <div class="errorSection">
+        <p v-if="error">Credenciales incorrectas</p>
+      </div>
+
       <div class="button">
         <button @click="sendLogin()">Iniciar Sesión</button>
       </div>
@@ -39,9 +43,12 @@ import { ref } from 'vue'
 export default {
   name: 'LoginView',
   data() {
+    const error = ref(false)
+
     return {
       username: '',
       password: '',
+      error,
     }
   },
   methods: {
@@ -107,14 +114,17 @@ export default {
                 })
                 .catch(error => {
                   console.log(error)
+                  this.error = true
                 })
             })
             .catch(error => {
               console.log(error)
+              this.error = true
             })
         })
         .catch(error => {
           console.log(error)
+          this.error = true
         })
     },
   },
@@ -163,6 +173,13 @@ export default {
       input {
         font-size: 1.3em;
         border-radius: 0.4rem;
+      }
+    }
+
+    .errorSection {
+      p {
+        color: red;
+        text-align: center;
       }
     }
 

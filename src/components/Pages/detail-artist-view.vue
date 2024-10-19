@@ -9,15 +9,15 @@
           class="artist-image">
         <p><strong>Información personal</strong></p>
 
-        <p><strong>Conocido por:</strong> Actuando</p>
+        <p><strong>Conocido por:</strong> <br> Actuando</p>
 
-        <p><strong>Créditos conocidos:</strong> {{ knownCredits }}</p>
+        <p><strong>Créditos conocidos:</strong>  <br> {{ knownCredits }}</p>
 
-        <p><strong>Sexo:</strong> {{ actor.gender === 1 ? 'Mujer' : 'Hombre' }}</p>
+        <p><strong>Sexo:</strong>  <br> {{ actor.gender === 1 ? 'Mujer' : 'Hombre' }}</p>
 
-        <p><strong>Cumpleaños:</strong> {{ actor.birthday ? formatBirthday(actor.birthday) : 'Desconocido' }}</p>
+        <p><strong>Cumpleaños:</strong>  <br> {{ actor.birthday ? formatBirthday(actor.birthday) : 'Desconocido' }}</p>
 
-        <p><strong>Lugar de Nacimiento:</strong> {{ actor.place_of_birth || 'Desconocido' }}</p>
+        <p><strong>Lugar de Nacimiento:</strong>  <br> {{ actor.place_of_birth || 'Desconocido' }}</p>
 
         <p><strong>También Conocido Como:</strong></p>
         <ul>
@@ -85,7 +85,7 @@ export default {
   methods: {
     getActorDetails() {
       const actorId = new URLSearchParams(window.location.search).get('id');
-      fetch(`https://api.themoviedb.org/3/person/10859?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
+      fetch(`https://api.themoviedb.org/3/person/2524?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
         .then(response => response.json())
         .then(data => {
           this.actor = data;
@@ -97,7 +97,7 @@ export default {
     },
 
     getActorMoviesAndSeries(actorId) {
-      fetch(`https://api.themoviedb.org/3/person/10859/combined_credits?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
+      fetch(`https://api.themoviedb.org/3/person/2524/combined_credits?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
         .then(response => response.json())
         .then(data => {
           this.moviesAndSeries = data.cast;
@@ -140,8 +140,9 @@ export default {
 .artist-details-container {
   display: flex;
   flex-direction: column;
+  margin-left: 130px;
   padding: 105px;
-  background-color: #2b2b2b;
+  background-color:var(--rich-black);
   color: #e0e0e0;
   font-family: Arial, sans-serif;
 }
@@ -151,23 +152,34 @@ export default {
 }
 
 .left-column {
-  width: 30%;
+  width: 20%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-right: 20px;
+  align-items: flex-start; 
+  padding: 20px; 
+  background-color:var(--oxford-blue); 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  color: rgb(255, 255, 255);
 }
 
 .artist-image {
-  width: 70%;
+  width: 100%;
   border-radius: 8px;
 }
 
+
 .left-column p,
 .left-column ul {
-  text-align: left;
-  margin: 10px 0;
+  margin: 10px 0; 
+  font-size: 1em;
 }
+
+.left-column strong {
+  font-weight: bold;
+  color: #fffcfc; 
+}
+
 
 .right-column {
   width: 70%;
@@ -177,24 +189,33 @@ export default {
 }
 
 .artist-name {
-  font-size: 2em;
+  font-size: 2.5em;
   margin-bottom: 20px;
+  font-weight: 600;
+  text-shadow: 2px 3px 4px rgba(2, 2, 2, 0.5);
 }
 
 .artist-biography {
   line-height: 1.6;
   margin-bottom: 30px;
+  background-color: var(--oxford-blue); 
+  color: white; 
+  padding: 15px; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-section {
+  padding-left: 380px;
   margin-bottom: 20px;
 }
 
 .filter-section button {
   margin-right: 10px;
   padding: 10px 15px;
-  background-color: #563d7c;
+  background-color:var(--oxford-blue);
   color: white;
+  border-radius: 8px; 
   border: none;
   cursor: pointer;
 }
@@ -218,7 +239,7 @@ export default {
 .toggle-biography-button {
   background-color: transparent;
   border: none;
-  color: #563d7c;
+  color: white;
   cursor: pointer;
   margin-bottom: 20px;
 }

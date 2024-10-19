@@ -11,13 +11,13 @@
 
         <p><strong>Conocido por:</strong> <br> Actuando</p>
 
-        <p><strong>Créditos conocidos:</strong>  <br> {{ knownCredits }}</p>
+        <p><strong>Créditos conocidos:</strong> <br> {{ knownCredits }}</p>
 
-        <p><strong>Sexo:</strong>  <br> {{ actor.gender === 1 ? 'Mujer' : 'Hombre' }}</p>
+        <p><strong>Sexo:</strong> <br> {{ actor.gender === 1 ? 'Mujer' : 'Hombre' }}</p>
 
-        <p><strong>Cumpleaños:</strong>  <br> {{ actor.birthday ? formatBirthday(actor.birthday) : 'Desconocido' }}</p>
+        <p><strong>Cumpleaños:</strong> <br> {{ actor.birthday ? formatBirthday(actor.birthday) : 'Desconocido' }}</p>
 
-        <p><strong>Lugar de Nacimiento:</strong>  <br> {{ actor.place_of_birth || 'Desconocido' }}</p>
+        <p><strong>Lugar de Nacimiento:</strong> <br> {{ actor.place_of_birth || 'Desconocido' }}</p>
 
         <p><strong>También Conocido Como:</strong></p>
         <ul>
@@ -44,13 +44,14 @@
 
         <h3>Conocido por:</h3>
         <div class="movies-known-for">
-          <div v-for="item in filteredMedia" :key="item.id" class="movie-item">
-            <img :src="'https://www.themoviedb.org/t/p/w200/' + item.poster_path" :alt="item.title || item.name"
-              class="movie-poster">
-            <p>{{ item.title || item.name }}</p>
+          <div class="scrollable-container">
+            <div v-for="item in filteredMedia" :key="item.id" class="movie-item">
+              <img :src="'https://www.themoviedb.org/t/p/w200/' + item.poster_path" :alt="item.title || item.name"
+                class="movie-poster">
+              <p>{{ item.title || item.name }}</p>
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -225,17 +226,6 @@ export default {
   flex-wrap: wrap;
 }
 
-.movie-item {
-  width: 150px;
-  margin: 10px;
-  text-align: center;
-}
-
-.movie-poster {
-  width: 100%;
-  border-radius: 8px;
-}
-
 .toggle-biography-button {
   background-color: transparent;
   border: none;
@@ -243,4 +233,46 @@ export default {
   cursor: pointer;
   margin-bottom: 20px;
 }
+
+.movie-item {
+  flex: 0 0 auto;
+  text-align: center;
+  width: 150px;
+}
+
+.movie-poster {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.scrollable-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  
+  position: relative;
+}
+
+.scrollable-container::-webkit-scrollbar {
+  height: 12px;
+  margin-bottom: -50px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background-color: #e0e0e0; 
+  border-radius: 6px; 
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background-color: #8888886e; 
+  border-radius: 4px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background-color:var(--oxford-blue); 
+}
+
+
+
 </style>

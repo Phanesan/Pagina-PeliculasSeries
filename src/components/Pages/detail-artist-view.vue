@@ -51,9 +51,7 @@
               :src="'https://www.themoviedb.org/t/p/w200/' + item.poster_path" :alt="item.title || item.name"
                 class="movie-poster">
                 <img v-else src="../../assets/img/movie.png" class="poster-image" />
-
-
-              <p>{{ item.title || item.name }}</p>
+              <p @click="$emit('changePage', 'DetailKeyword', { id: item.id })">{{ item.title || item.name }}</p>
             </div>
           </div>
         </div>
@@ -63,6 +61,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'DetailArtistView',
 
@@ -149,6 +148,7 @@ export default {
   background-color: var(--rich-black);
   color: #e0e0e0;
   font-family: Arial, sans-serif;
+  overflow-x: hidden;
 }
 
 .artist-info {

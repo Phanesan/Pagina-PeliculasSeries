@@ -97,7 +97,7 @@ export default {
     },
     viewMovie(movie) {
       this.$emit('changePage', 'DetailMovie', {
-        movieId: movie.id,
+        id: movie.id,
         movieTitle: movie.title,
       })
     },

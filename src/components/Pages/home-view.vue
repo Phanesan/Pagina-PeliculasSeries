@@ -5,7 +5,30 @@
       <div class="card-container" ref="carousel">
         <div
           class="card"
-          v-for="(movie, index) in movies"
+          v-for="(popularMovie, index) in popularMovies"
+          :key="index"
+          @click="goToMovie(popularMovie.id)"
+        >
+          <img
+            :src="getImageUrl(popularMovie.poster_path)"
+            alt="Popular Movie Poster"
+          />
+          <div>
+            <h3>{{ popularMovie.title }}</h3>
+            <p>Fecha de estreno</p>
+            <p>{{ popularMovie.release_date }}</p>
+            <p>Popularidad</p>
+            <p>{{ popularMovie.vote_average.toFixed(1) }}</p>
+          </div>
+          <a href="#" class="button">Ver Detalles</a>
+        </div>
+      </div>
+
+      <h1>Lo más popular</h1>
+      <div class="card-container" ref="carousel">
+        <div
+          class="card"
+          v-for="(movie, index) in topRatedMovies"
           :key="index"
           @click="goToMovie(movie.id)"
         >
@@ -21,21 +44,44 @@
         </div>
       </div>
 
-      <h1>Lo más popular</h1>
+      <h1>Ver Gratis</h1>
       <div class="card-container" ref="carousel">
         <div
           class="card"
-          v-for="(movie, index) in movies"
+          v-for="(onAirShow, index) in freeWatch"
           :key="index"
-          @click="goToMovie(movie.id)"
+          @click="goToMovie(onAirShow.id)"
         >
-          <img :src="getImageUrl(movie.poster_path)" alt="Movie Poster" />
+          <img
+            :src="getImageUrl(onAirShow.poster_path)"
+            alt="On Air TV Show Poster"
+          />
           <div>
-            <h3>{{ movie.title }}</h3>
+            <h3>{{ onAirShow.name }}</h3>
             <p>Fecha de estreno</p>
-            <p>{{ movie.release_date }}</p>
+            <p>{{ onAirShow.first_air_date }}</p>
             <p>Popularidad</p>
-            <p>{{ movie.vote_average.toFixed(1) }}</p>
+            <p>{{ onAirShow.vote_average.toFixed(1) }}</p>
+          </div>
+          <a href="#" class="button">Ver Detalles</a>
+        </div>
+      </div>
+
+      <h1>Series o TV</h1>
+      <div class="card-container" ref="carousel">
+        <div
+          class="card"
+          v-for="(tvShow, index) in topRatedTVShows"
+          :key="index"
+          @click="goToMovie(tvShow.id)"
+        >
+          <img :src="getImageUrl(tvShow.poster_path)" alt="TV Show Poster" />
+          <div>
+            <h3>{{ tvShow.name }}</h3>
+            <p>Fecha de estreno</p>
+            <p>{{ tvShow.first_air_date }}</p>
+            <p>Popularidad</p>
+            <p>{{ tvShow.vote_average.toFixed(1) }}</p>
           </div>
           <a href="#" class="button">Ver Detalles</a>
         </div>
@@ -50,6 +96,9 @@ export default {
   data() {
     return {
       movies: [],
+      topRatedMovies: [],
+      popularMovies: [],
+      freeWatch: [],
     }
   },
   methods: {
@@ -64,12 +113,11 @@ export default {
     },
 
     fetchMovies() {
-      const apiKey =
-        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NTQxODk4NTc3NWNjZTRkMjZjNjc0NTc1ZjRmNDliMiIsIm5iZiI6MTcyOTMxNDc2Ny4zMzYzODQsInN1YiI6IjY3MDc0YjA2ZTQ2YTEyYTE5NDE5ZTg4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.u8RuyookdzmOJ_p30WXq1LP9gnp4b55ups-Ne1Fj-Q4'
-      const apiUrl = 'https://api.themoviedb.org/3/discover/movie'
-
       const myHeaders = new Headers()
-      myHeaders.append('Authorization', `Bearer ${apiKey}`)
+      myHeaders.append(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NTQxODk4NTc3NWNjZTRkMjZjNjc0NTc1ZjRmNDliMiIsIm5iZiI6MTcyOTMxNDc2Ny4zMzYzODQsInN1YiI6IjY3MDc0YjA2ZTQ2YTEyYTE5NDE5ZTg4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.u8RuyookdzmOJ_p30WXq1LP9gnp4b55ups-Ne1Fj-Q4',
+      )
 
       const requestOptions = {
         method: 'GET',
@@ -77,30 +125,115 @@ export default {
         redirect: 'follow',
       }
 
-      fetch(apiUrl, requestOptions)
+      fetch(
+        'https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1',
+        requestOptions,
+      )
         .then(response => response.json())
         .then(data => {
           console.log(data.results)
-          this.movies = data.results
+          this.topRatedTVShows = data.results
+        })
+        .catch(error => console.error('Error:', error))
+    },
+
+    fetchTopRatedMovies() {
+      const myHeaders = new Headers()
+      myHeaders.append(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NTQxODk4NTc3NWNjZTRkMjZjNjc0NTc1ZjRmNDliMiIsIm5iZiI6MTcyOTMxNDc2Ny4zMzYzODQsInN1YiI6IjY3MDc0YjA2ZTQ2YTEyYTE5NDE5ZTg4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.u8RuyookdzmOJ_p30WXq1LP9gnp4b55ups-Ne1Fj-Q4',
+      )
+
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow',
+      }
+
+      fetch(
+        'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1',
+        requestOptions,
+      )
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.results)
+          this.topRatedMovies = data.results
+        })
+        .catch(error => console.error('Error:', error))
+    },
+
+    fetchPopularMovies() {
+      const myHeaders = new Headers()
+      myHeaders.append(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NTQxODk4NTc3NWNjZTRkMjZjNjc0NTc1ZjRmNDliMiIsIm5iZiI6MTcyOTMxNDc2Ny4zMzYzODQsInN1YiI6IjY3MDc0YjA2ZTQ2YTEyYTE5NDE5ZTg4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.u8RuyookdzmOJ_p30WXq1LP9gnp4b55ups-Ne1Fj-Q4',
+      )
+
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow',
+      }
+
+      fetch(
+        'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&region=AE',
+        requestOptions,
+      )
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.results)
+          this.popularMovies = data.results
+        })
+        .catch(error => console.error('Error:', error))
+    },
+    fetchFreeWatch() {
+      const myHeaders = new Headers()
+      myHeaders.append(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3NTQxODk4NTc3NWNjZTRkMjZjNjc0NTc1ZjRmNDliMiIsIm5iZiI6MTcyOTMxNDc2Ny4zMzYzODQsInN1YiI6IjY3MDc0YjA2ZTQ2YTEyYTE5NDE5ZTg4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.u8RuyookdzmOJ_p30WXq1LP9gnp4b55ups-Ne1Fj-Q4',
+      )
+
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow',
+      }
+
+      fetch(
+        'https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1',
+        requestOptions,
+      )
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.results)
+          this.freeWatch = data.results
         })
         .catch(error => console.error('Error:', error))
     },
   },
   mounted() {
     this.fetchMovies()
+    this.fetchTopRatedMovies()
+    this.fetchPopularMovies()
+    this.fetchFreeWatch()
   },
 }
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 .container {
-  width: 55%;
+  width: 43%;
   margin: auto;
   padding: 20px;
 }
@@ -118,11 +251,12 @@ h1 {
   gap: 1rem;
   scroll-behavior: smooth;
   padding: 1rem 0;
+  max-width: 100%;
 }
 
 .card {
-  width: 150px;
-  background-color: #f4f4f4;
+  width: 200px;
+  background-color: #d0dcff;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -141,20 +275,25 @@ h1 {
 
 .card h3 {
   font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
+.card p {
+  margin: 3px 0;
+}
 .button {
   text-align: center;
   display: inline-block;
   margin-top: 10px;
   padding: 10px 15px;
-  background-color: #5c5c5c;
+  background-color: var(--oxford-blue);
   color: white;
   text-decoration: none;
   border-radius: 5px;
 }
 
 .button:hover {
-  background-color: #1f1f1f;
+  background-color: rgb(8, 16, 34);
 }
 </style>

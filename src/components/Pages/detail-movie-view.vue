@@ -1,6 +1,8 @@
 <template>
   <div id="movieDetails">
-    <button class="back-button" @click="goBack">⟵ Regresar</button>
+    <button class="back-button" @click="$emit('changePage', 'Home')">
+      ⟵ Regresar
+    </button>
 
     <div class="movie-content">
       <img
@@ -13,25 +15,23 @@
       />
       <div class="movie-info">
         <h1 class="movie-title">{{ movie.title }}</h1>
-        <p class="movie-tagline">{{ movie.tagline }}</p>
+        <h3 class="movie-tagline">{{ movie.tagline }}</h3>
 
         <div class="movie-meta">
           <p>
-            <strong>Lanzamiento:</strong> <span>{{ movie.release_date }}</span>
+            <h3>Lanzamiento:</h3> <span>{{ movie.release_date }}</span>
           </p>
           <p>
-            <strong>Lenguaje original:</strong>
-            <span>{{ movie.original_language }}</span>
+            <h3>Lenguaje original:</h3> <span>{{ getLanguageFullName(movie.original_language) }}</span>
           </p>
           <p>
-            <strong>Popularidad:</strong> <span>{{ movie.popularity }}</span>
+            <h3>Popularidad:</h3> <span>{{ movie.popularity }}</span>
           </p>
           <p>
-            <strong>Votos:</strong> <span>{{ movie.vote_count }}</span>
+            <h3>Votos:</h3> <span>{{ movie.vote_count }}</span>
           </p>
           <p>
-            <strong>Calificación:</strong>
-            <span>{{ movie.vote_average }} / 10</span>
+            <h3>Calificación:</h3> <span>{{ movie.vote_average }} / 10</span>
           </p>
         </div>
 
@@ -39,18 +39,17 @@
           🎬 Ver Tráiler
         </button>
 
-        <p class="movie-genres">
-          <strong>Géneros:</strong>
+        <div class="movie-genres">
+          <h2>Géneros</h2>
           <span v-for="(genre, index) in movie.genres" :key="genre.id">
             <button @click="redirectToCategory(genre.id)" class="genre-button">
               {{ genre.name }}
             </button>
-            <span v-if="index < movie.genres.length - 1">, </span>
           </span>
-        </p>
+        </div>
 
         <div class="movie-keywords">
-          <h3>Palabras clave</h3>
+          <h2>Palabras clave</h2>
           <div class="keywords-list">
             <button
               v-for="(keyword, index) in keywords"
@@ -62,12 +61,13 @@
           </div>
         </div>
 
-        <p class="movie-overview">
-          <strong>Sinopsis:</strong> <span>{{ movie.overview }}</span>
-        </p>
+        <div class="movie-overview">
+          <h2>Sinopsis</h2>
+          <span>{{ movie.overview }}</span>
+        </div>
 
         <div class="rating">
-          <label for="rating">Tu calificación:</label>
+          <h2 for="rating">Tu calificación:</h2>
           <select v-model="userRating" id="rating">
             <option disabled value="">Selecciona un rating</option>
             <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
@@ -106,6 +106,28 @@
         </div>
       </div>
     </div>
+    <div class="recommended-movies">
+      <h2>Películas Recomendadas</h2>
+      <div class="recommended-carousel-container">
+        <div class="recommended-carousel">
+          <div
+            class="recommended-item"
+            v-for="(recommended, index) in recommendedMovies"
+            :key="recommended.id"
+          >
+            <img
+              v-if="recommended.poster_path"
+              :src="`https://www.themoviedb.org/t/p/w185${recommended.poster_path}`"
+              alt="Poster de {{ recommended.title }}"
+              class="recommended-image"
+            />
+            <p>
+              <strong>{{ recommended.title }}</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <button class="artist-button" @click="$emit('changePage', 'DetailArtist')">
@@ -121,12 +143,12 @@ export default {
       movie: {},
       cast: [],
       userRating: '',
-      keywords: [], // Nueva variable para almacenar las palabras clave
+      keywords: [],
     }
   },
   methods: {
     fetchMovieDetails() {
-      const movieId = 117 // Usa el ID de la película
+      const movieId = 45000
       fetch(
         `https://api.themoviedb.org/3/movie/${movieId}?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
       )
@@ -136,7 +158,7 @@ export default {
           document.title = this.movie.title
           this.loadRating(movieId)
           this.fetchMovieCast(movieId)
-          this.fetchMovieKeywords(movieId) // Llamada para obtener las palabras clave
+          this.fetchMovieKeywords(movieId)
         })
         .catch(error => {
           console.error(
@@ -168,31 +190,40 @@ export default {
           console.error('Error al obtener las palabras clave: ' + error)
         })
     },
-    fetchMovieTrailer(movieId) {
-      fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
-      )
-        .then(response => response.json())
-        .then(data => {
-          const trailer = data.results.find(
-            video => video.type === 'Trailer' && video.site === 'YouTube',
-          )
-          if (trailer) {
-            this.trailerKey = trailer.key // Guarda el ID del tráiler
-          }
-        })
-        .catch(error => {
-          console.error('Error al obtener el tráiler: ' + error)
-        })
+    async fetchMovieTrailer(movieId) {
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=13c164db7b0cbbc91a51acf2fcc65f79`
+        );
+
+        const data = await response.json();
+        console.log('Videos disponibles:', data.results);
+        const trailer = data.results.find(video => video.site === 'YouTube');
+
+        if (trailer) {
+          console.log('Tráiler encontrado:', trailer);
+          return trailer.key;
+        } else {
+          console.error('No se encontró un tráiler o teaser en YouTube para esta película.');
+          alert('No se encontró un tráiler o teaser para esta película.');
+          return null;
+        }
+      } catch (error) {
+        console.error('Error al obtener el tráiler: ' + error);
+        return null;
+      }
     },
-    watchTrailer() {
-      if (this.trailerKey) {
+    async watchTrailer() {
+      const trailerKey = await this.fetchMovieTrailer(this.movie.id);
+      console.log(trailerKey);
+      
+      if (trailerKey) {
         window.open(
-          `https://www.youtube.com/watch?v=${this.trailerKey}`,
-          '_blank',
-        )
+          `https://www.youtube.com/watch?v=${trailerKey}`,
+          '_blank'
+        );
       } else {
-        alert('No se encontró el tráiler para esta película.')
+        alert('No se encontró el tráiler para esta película.');
       }
     },
     goBack() {
@@ -220,9 +251,36 @@ export default {
       alert('Tu calificación ha sido eliminada.')
     },
     redirectToCategory(genreId) {
-      // Redireccionar a la pantalla de la categoría
       this.$emit('changePage', 'DetailCategory', { genreId })
     },
+    fetchRecommendedMovies(movieId) {
+      fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=13c164db7b0cbbc91a51acf2fcc65f79&language=es-US&page=1`,
+      )
+        .then(response => response.json())
+        .then(data => {
+          console.log(data.results)
+          this.recommendedMovies = data.results
+        })
+        .catch(error => {
+          console.error('Error al obtener películas recomendadas: ' + error)
+        })
+    },
+    getLanguageFullName(abbr) {
+      const languageMap = {
+        en: "Inglés",
+        es: "Español",
+        fr: "Francés",
+        de: "Alemán",
+        it: "Italiano",
+        ja: "Japonés",
+        ko: "Coreano",
+        pt: "Portugués",
+        zh: "Chino",
+        ru: "Ruso"
+      };
+      return languageMap[abbr] || abbr;
+    }
   },
   mounted() {
     this.fetchMovieDetails()
@@ -234,148 +292,167 @@ export default {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #3f3f3f;
-  color: #333;
 }
 
 #movieDetails {
-  max-width: 1200px;
-  margin: 20px auto;
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .movie-content {
   display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .movie-poster {
-  width: 250px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  height: auto;
+  margin-right: 20px;
 }
 
 .movie-info {
-  flex: 1;
+  flex-grow: 1;
 }
 
 .movie-title {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 28px;
+  margin: 0;
 }
 
 .movie-tagline {
   font-style: italic;
-  color: #888;
+  color: #986ff8;
 }
 
-.movie-meta p {
-  margin: 8px 0;
-}
-
-.movie-genres,
-.movie-overview {
-  margin: 20px 0;
-}
-
-.rating {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.rating select {
-  width: 150px;
-  padding: 5px;
-  border-radius: 5px;
-}
-
-.save-button,
-.delete-button {
-  width: 150px;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 5px;
+.trailer-button {
+  background-color: #8a1336;
+  color: white;
+  padding: 8px 12px;
+  margin: 15px 0;
   border: none;
   cursor: pointer;
+  border-radius: 8px;
+}
+
+.genre-button {
+  background-color: #fbbf24;
+  color: white;
+  padding: 8px 10px;
+  margin: 5px 3px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 8px;
+}
+
+.keywords-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.keyword {
+  background-color: #4ade80;
+  color: rgb(39, 39, 39);
+  padding: 8px 12px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
 .save-button {
-  background-color: #28a745;
+  background-color: #4cad59;
   color: white;
-}
-
-.save-button:hover {
-  background-color: #218838;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-right: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .delete-button {
-  background-color: #dc3545;
+  background-color: #ef4444;
   color: white;
-}
-
-.delete-button:hover {
-  background-color: #c82333;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-right: 8px;
+  margin-top: 15px;
+  margin-bottom: 8px;
 }
 
 .back-button {
-  background-color: #007bff;
+  background-color: #f87171;
   color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  font-size: 1rem;
-}
-
-.back-button:hover {
-  background-color: #0056b3;
-}
-
-.movie-cast h2 {
-  margin-top: 30px;
+  padding: 8px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
 .carousel-container {
-  display: flex;
+  margin-top: 20px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
 }
 
 .carousel {
   display: flex;
-  gap: 10px;
 }
 
 .actor-item {
-  flex: 0 0 auto;
-  scroll-snap-align: start;
   text-align: center;
+  margin-right: 10px;
+  background-color: #272727;
+  border-radius: 8px;
 }
 
 .actor-image {
-  width: 100px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 5px;
+  width: 150px;
+  height: 200px;
+  border-radius: 8px;
 }
 
-.trailer-button {
-  background-color: #3d3d3d;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+.actor-name {
+  font-weight: bold;
+}
+
+.recommended-carousel-container {
   margin-top: 20px;
+  overflow-x: auto;
 }
 
-.trailer-button:hover {
-  background-color: #1d1d1d;
+.recommended-carousel {
+  display: flex;
+}
+
+.recommended-item {
+  text-align: center;
+  margin-right: 10px;
+}
+
+.recommended-image {
+  width: 150px;
+  height: 225px;
+}
+
+.artist-button {
+  background-color: #9ca3af;
+  color: white;
+  padding: 8px 10px;
+  border: none;
+  cursor: pointer;
+}
+select{
+  width: 150px;
+  border-radius: 8px;
+  margin-right: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  color: var(--color-text);
+  background-color: #272727;
 }
 </style>

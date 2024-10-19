@@ -61,6 +61,7 @@
                 v-for="(keyword, index) in keywords"
                 :key="keyword.id"
                 class="keyword"
+                @click="$emit('changePage', 'DetailKeyword', { keywordId: keyword.id, keywordName: keyword.name })"
               >
                 {{ keyword.name }}
               </button>
@@ -146,6 +147,11 @@
 <script>
 export default {
   name: 'DetailMovieView',
+  props: {
+    payload: {
+      type: Object
+    }
+  },
   data() {
     return {
       movie: {},
@@ -157,8 +163,7 @@ export default {
   },
   methods: {
     fetchMovieDetails() {
-      //const movieId = ""
-      const movieId = 299534
+      const movieId = this.payload.movieId
       fetch(
         `https://api.themoviedb.org/3/movie/${movieId}?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
       )
@@ -320,6 +325,11 @@ body {
   margin-top: 20px;
 }
 
+.movie-cast > h2 {
+  margin-top: 20px;
+  margin-left: 40px;
+}
+
 .movie-poster {
   width: 400px;
   height: auto;
@@ -426,6 +436,7 @@ body {
   margin-right: 10px;
   background-color: #272727;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .actor-image {
@@ -451,6 +462,7 @@ body {
 .recommended-item {
   text-align: center;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .recommended-image {
@@ -459,17 +471,14 @@ body {
   border-radius: 8px;
 }
 
-.artist-button {
-  background-color: #9ca3af;
-  color: white;
-  padding: 8px 10px;
-  border: none;
-  cursor: pointer;
+.recommended-movies > h2 {
+  margin-top: 20px;
+  margin-left: 40px;
 }
 
 select {
   width: 150px;
-  border-radius: 8px;
+  border-radius: 5%;
   margin-right: 8px;
   margin-top: 8px;
   margin-bottom: 8px;

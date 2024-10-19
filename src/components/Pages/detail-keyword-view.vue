@@ -1,25 +1,53 @@
 <template>
-  <div id="main">
-    <div
-      class="card"
-      v-for="movie in movies"
-      :key="movie.id"
-      @click="viewMovie(movie)"
-    >
-      <img
-        :src="
-          'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' +
-          movie.poster_path
-        "
-        alt="movie poster"
-      />
-      <h2>{{ movie.title }}</h2>
-      <p>
-        <strong>Lanzamiento:</strong><br />
-        {{ movie.release_date }}
-      </p>
-      <p><strong>Lenguaje original:</strong> {{ movie.original_language }}</p>
-      <p>{{ movie.overview }}</p>
+  <div id="container">
+    <h1 id="keyword-title">{{ keywordName }}</h1>
+
+    <h2 class="section-title">Películas</h2>
+    <div id="movies-carousel" class="carousel">
+      <div
+        class="card"
+        v-for="movie in movies"
+        :key="movie.id"
+        @click="viewMovie(movie)"
+      >
+        <img
+          :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
+          alt="movie poster"
+        />
+        <h2>{{ movie.title }}</h2>
+        <p>
+          <strong>📅:</strong>
+          {{ movie.release_date }}
+        </p>
+        <p>
+          <strong>🗺️:</strong>
+          {{ getLanguageFullName(movie.original_language) }}
+        </p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Series de TV</h2>
+    <div id="series-carousel" class="carousel">
+      <div
+        class="card"
+        v-for="serie in series"
+        :key="serie.id"
+        @click="viewSerie(serie)"
+      >
+        <img
+          :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${serie.poster_path}`"
+          alt="serie poster"
+        />
+        <h2>{{ serie.name }}</h2>
+        <p>
+          <strong>📅:</strong>
+          {{ serie.first_air_date }}
+        </p>
+        <p>
+          <strong>🗺️:</strong>
+          {{ getLanguageFullName(serie.original_language) }}
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -27,52 +55,117 @@
 <script>
 export default {
   name: 'DetailKeywordView',
+  props: {
+    payload: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       movies: [],
-    };
+      series: [],
+      keywordName: this.payload.keywordName,
+    }
   },
   methods: {
     getMovies() {
-      const keywordId = 1701;
+      const keywordId = this.payload.keywordId
       fetch(
         `https://api.themoviedb.org/3/discover/movie?api_key=13c164db7b0cbbc91a51acf2fcc65f79&with_keywords=${keywordId}`,
       )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          this.movies = data.results;
+        .then(response => response.json())
+        .then(data => {
+          this.movies = data.results
         })
-        .catch((error) => {
-          console.log('Error: ' + error);
-        });
+        .catch(error => {
+          console.error('Error: ' + error)
+        })
+    },
+    getSeries() {
+      const keywordId = this.payload.keywordId
+      fetch(
+        `https://api.themoviedb.org/3/discover/tv?api_key=13c164db7b0cbbc91a51acf2fcc65f79&with_keywords=${keywordId}`,
+      )
+        .then(response => response.json())
+        .then(data => {
+          this.series = data.results
+        })
+        .catch(error => {
+          console.error('Error: ' + error)
+        })
     },
     viewMovie(movie) {
-      console.log(movie);
-      const movieId = movie.id;
-      window.location.href = `movie.html?id=${movieId}`;
+      this.$emit('changePage', 'DetailMovie', {
+        movieId: movie.id,
+        movieTitle: movie.title,
+      })
+    },
+    viewSerie(serie) {
+      const serieId = serie.id
+      window.location.href = `serie.html?id=${serieId}`
+    },
+    getLanguageFullName(abbr) {
+      const languageMap = {
+        en: 'Inglés',
+        es: 'Español',
+        fr: 'Francés',
+        de: 'Alemán',
+        it: 'Italiano',
+        ja: 'Japonés',
+        ko: 'Coreano',
+        pt: 'Portugués',
+        zh: 'Chino',
+        ru: 'Ruso',
+      }
+      return languageMap[abbr] || abbr
     },
   },
   mounted() {
-    console.log('App mounted');
-    this.getMovies();
+    this.getMovies()
+    this.getSeries()
   },
-};
+}
 </script>
 
 <style>
-#main {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+#keyword-title {
+  font-size: 32px;
+  color: #fff;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 28px;
+  color: #fff;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  text-align: left;
+  width: 100%;
+  padding-left: 20px;
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto; /* Cambiado para permitir desplazamiento */
   gap: 20px;
   padding: 20px;
-  justify-content: center;
-  justify-items: center;
-  max-width: 1200px; 
-  margin: 0 auto; 
+  width: 100%;
+  max-width: 1200px;
+  scroll-behavior: smooth;
 }
 
 .card {
+  min-width: 250px;
+  max-width: 300px;
   background-color: #f0f0f0;
   border-radius: 10px;
   overflow: hidden;
@@ -81,16 +174,17 @@ export default {
   transition: transform 0.2s ease;
   display: flex;
   flex-direction: column;
+  height: 600px; /* Limita la altura de las cartas */
 }
 
 .card:hover {
-  transform: scale(1.05);
+  transform: scale(1.005);
 }
 
 .card img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 80%; /* Ocupa el 80% de la altura de la carta */
+  object-fit: fill;
 }
 
 .card h2 {
@@ -103,5 +197,8 @@ export default {
   padding: 0 10px;
   font-size: 14px;
   color: #555;
+  text-align: justify;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

@@ -157,6 +157,7 @@ export default {
   },
   methods: {
     fetchMovieDetails() {
+      //const movieId = ""
       const movieId = 299534
       fetch(
         `https://api.themoviedb.org/3/movie/${movieId}?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,

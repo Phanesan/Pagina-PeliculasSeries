@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     sendLogin() {
-      const api_key = 'b268f05dee97359b50ef5b57232a727a'
+      const api_key = process.env.API_KEY;
 
       let config = {
         method: 'get',

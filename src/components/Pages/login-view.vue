@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     sendLogin() {
-      const api_key = process.env.API_KEY;
+      const api_key = import.meta.env.VITE_API_KEY;
 
       let config = {
         method: 'get',

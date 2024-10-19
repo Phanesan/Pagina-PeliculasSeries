@@ -5,80 +5,80 @@
     </button>
 
     <div class="movie-content">
-      <img
-        class="movie-poster"
-        :src="
-          'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' +
-          movie.poster_path
-        "
-        alt="movie poster"
-      />
-      <div class="movie-info">
-        <h1 class="movie-title">{{ movie.title }}</h1>
-        <h3 class="movie-tagline">{{ movie.tagline }}</h3>
+      <div class="movie-details">
+        <img
+          class="movie-poster"
+          :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
+          alt="movie poster"
+        />
+        <div class="movie-info">
+          <h1 class="movie-title">{{ movie.title }}</h1>
+          <h3 class="movie-tagline">{{ movie.tagline }}</h3>
 
-        <div class="movie-meta">
-          <p>
-            <h3>Lanzamiento:</h3> <span>{{ movie.release_date }}</span>
-          </p>
-          <p>
-            <h3>Lenguaje original:</h3> <span>{{ getLanguageFullName(movie.original_language) }}</span>
-          </p>
-          <p>
-            <h3>Popularidad:</h3> <span>{{ movie.popularity }}</span>
-          </p>
-          <p>
-            <h3>Votos:</h3> <span>{{ movie.vote_count }}</span>
-          </p>
-          <p>
-            <h3>Calificación:</h3> <span>{{ movie.vote_average }} / 10</span>
-          </p>
-        </div>
+          <div class="movie-meta">
+            <p>
+              <h3>Lanzamiento:</h3> <span>{{ movie.release_date }}</span>
+            </p>
+            <p>
+              <h3>Lenguaje original:</h3>
+              <span>{{ getLanguageFullName(movie.original_language) }}</span>
+            </p>
+            <p>
+              <h3>Popularidad:</h3> <span>{{ movie.popularity }}</span>
+            </p>
+            <p>
+              <h3>Votos:</h3> <span>{{ movie.vote_count }}</span>
+            </p>
+            <p>
+              <h3>Calificación:</h3> <span>{{ movie.vote_average }} / 10</span>
+            </p>
+          </div>
 
-        <button class="trailer-button" @click="watchTrailer">
-          🎬 Ver Tráiler
-        </button>
+          <button class="trailer-button" @click="watchTrailer">
+            🎬 Ver Tráiler
+          </button>
 
-        <div class="movie-genres">
-          <h2>Géneros</h2>
-          <span v-for="(genre, index) in movie.genres" :key="genre.id">
-            <button @click="redirectToCategory(genre.id)" class="genre-button">
-              {{ genre.name }}
+          <div class="movie-genres">
+            <h2>Géneros</h2>
+            <span v-for="(genre, index) in movie.genres" :key="genre.id">
+              <button @click="redirectToCategory(genre.id)" class="genre-button">
+                {{ genre.name }}
+              </button>
+            </span>
+          </div>
+
+          <div class="movie-keywords">
+            <h2>Palabras clave</h2>
+            <div class="keywords-list">
+              <button
+                v-for="(keyword, index) in keywords"
+                :key="keyword.id"
+                class="keyword"
+              >
+                {{ keyword.name }}
+              </button>
+            </div>
+          </div>
+
+          <div class="movie-overview">
+            <h2>Sinopsis</h2>
+            <span>{{ movie.overview }}</span>
+          </div>
+
+          <div class="rating">
+            <h2 for="rating">Tu calificación:</h2>
+            <select v-model="userRating" id="rating">
+              <option disabled value="">Selecciona un rating</option>
+              <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
+            </select>
+            <br />
+            <button class="save-button" @click="saveRating">
+              Guardar calificación
             </button>
-          </span>
-        </div>
-
-        <div class="movie-keywords">
-          <h2>Palabras clave</h2>
-          <div class="keywords-list">
-            <button
-              v-for="(keyword, index) in keywords"
-              :key="keyword.id"
-              class="keyword"
-            >
-              {{ keyword.name }}
+            <button class="delete-button" @click="deleteRating">
+              Eliminar calificación
             </button>
           </div>
-        </div>
-
-        <div class="movie-overview">
-          <h2>Sinopsis</h2>
-          <span>{{ movie.overview }}</span>
-        </div>
-
-        <div class="rating">
-          <h2 for="rating">Tu calificación:</h2>
-          <select v-model="userRating" id="rating">
-            <option disabled value="">Selecciona un rating</option>
-            <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
-          </select>
-          <br />
-          <button class="save-button" @click="saveRating">
-            Guardar calificación
-          </button>
-          <button class="delete-button" @click="deleteRating">
-            Eliminar calificación
-          </button>
         </div>
       </div>
     </div>
@@ -87,15 +87,16 @@
       <h2>Reparto</h2>
       <div class="carousel-container">
         <div class="carousel">
-          <div
-            class="actor-item"
-            v-for="(actor, index) in cast"
-            :key="actor.cast_id"
-          >
+          <div class="actor-item" v-for="(actor, index) in cast" :key="actor.cast_id">
             <img
               v-if="actor.profile_path"
               :src="`https://www.themoviedb.org/t/p/w185${actor.profile_path}`"
-              alt="Foto de {{ actor.name }} "
+              alt="Foto de {{ actor.name }}"
+              class="actor-image"
+            />
+            <img
+              v-else
+              src="../../assets/img/user.png"
               class="actor-image"
             />
             <p>
@@ -106,7 +107,8 @@
         </div>
       </div>
     </div>
-    <div class="recommended-movies">
+
+    <div class="recommended-movies" v-if="recommendedMovies.length > 0">
       <h2>Películas Recomendadas</h2>
       <div class="recommended-carousel-container">
         <div class="recommended-carousel">
@@ -128,12 +130,12 @@
         </div>
       </div>
     </div>
+    <div v-else>
+      <p>No hay películas recomendadas disponibles.</p>
+    </div>
   </div>
-
-  <button class="artist-button" @click="$emit('changePage', 'DetailArtist')">
-    Ver Detalle del Artista
-  </button>
 </template>
+
 
 <script>
 export default {
@@ -144,60 +146,58 @@ export default {
       cast: [],
       userRating: '',
       keywords: [],
-    }
+      recommendedMovies: [], // Inicializa como un array vacío
+    };
   },
   methods: {
     fetchMovieDetails() {
-      const movieId = 45000
+      const movieId = 299534; // ID de ejemplo, reemplázalo según sea necesario
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+        `https://api.themoviedb.org/3/movie/${movieId}?api_key=13c164db7b0cbbc91a51acf2fcc65f79`
       )
         .then(response => response.json())
         .then(data => {
-          this.movie = data
-          document.title = this.movie.title
-          this.loadRating(movieId)
-          this.fetchMovieCast(movieId)
-          this.fetchMovieKeywords(movieId)
+          this.movie = data;
+          document.title = this.movie.title;
+          this.loadRating(movieId);
+          this.fetchMovieCast(movieId);
+          this.fetchMovieKeywords(movieId);
+          this.fetchRecommendedMovies(movieId); // Llama aquí para obtener películas recomendadas
         })
         .catch(error => {
-          console.error(
-            'Error al obtener los detalles de la película: ' + error,
-          )
-        })
+          console.error('Error al obtener los detalles de la película: ' + error);
+        });
     },
     fetchMovieCast(movieId) {
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+        `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=13c164db7b0cbbc91a51acf2fcc65f79`
       )
         .then(response => response.json())
         .then(data => {
-          this.cast = data.cast
+          this.cast = data.cast;
         })
         .catch(error => {
-          console.error('Error al obtener el reparto de la película: ' + error)
-        })
+          console.error('Error al obtener el reparto de la película: ' + error);
+        });
     },
     fetchMovieKeywords(movieId) {
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/keywords?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+        `https://api.themoviedb.org/3/movie/${movieId}/keywords?api_key=13c164db7b0cbbc91a51acf2fcc65f79`
       )
         .then(response => response.json())
         .then(data => {
-          this.keywords = data.keywords
+          this.keywords = data.keywords;
         })
         .catch(error => {
-          console.error('Error al obtener las palabras clave: ' + error)
-        })
+          console.error('Error al obtener las palabras clave: ' + error);
+        });
     },
     async fetchMovieTrailer(movieId) {
       try {
         const response = await fetch(
           `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=13c164db7b0cbbc91a51acf2fcc65f79`
         );
-
         const data = await response.json();
-        console.log('Videos disponibles:', data.results);
         const trailer = data.results.find(video => video.site === 'YouTube');
 
         if (trailer) {
@@ -215,7 +215,6 @@ export default {
     },
     async watchTrailer() {
       const trailerKey = await this.fetchMovieTrailer(this.movie.id);
-      console.log(trailerKey);
       
       if (trailerKey) {
         window.open(
@@ -227,44 +226,44 @@ export default {
       }
     },
     goBack() {
-      window.history.back()
+      window.history.back();
     },
     saveRating() {
       if (this.userRating) {
-        const movieId = this.movie.id
-        localStorage.setItem(`rating_${movieId}`, this.userRating)
-        alert(`Gracias por calificar con ${this.userRating} estrellas.`)
+        const movieId = this.movie.id;
+        localStorage.setItem(`rating_${movieId}`, this.userRating);
+        alert(`Gracias por calificar con ${this.userRating} estrellas.`);
       } else {
-        alert('Por favor selecciona un rating antes de guardar.')
+        alert('Por favor selecciona un rating antes de guardar.');
       }
     },
     loadRating(movieId) {
-      const savedRating = localStorage.getItem(`rating_${movieId}`)
+      const savedRating = localStorage.getItem(`rating_${movieId}`);
       if (savedRating) {
-        this.userRating = savedRating
+        this.userRating = savedRating;
       }
     },
     deleteRating() {
-      const movieId = this.movie.id
-      localStorage.removeItem(`rating_${movieId}`)
-      this.userRating = ''
-      alert('Tu calificación ha sido eliminada.')
+      const movieId = this.movie.id;
+      localStorage.removeItem(`rating_${movieId}`);
+      this.userRating = '';
+      alert('Tu calificación ha sido eliminada.');
     },
     redirectToCategory(genreId) {
-      this.$emit('changePage', 'DetailCategory', { genreId })
+      this.$emit('changePage', 'DetailCategory', { genreId });
     },
     fetchRecommendedMovies(movieId) {
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=13c164db7b0cbbc91a51acf2fcc65f79&language=es-US&page=1`,
+        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=13c164db7b0cbbc91a51acf2fcc65f79&language=es-US&page=1`
       )
         .then(response => response.json())
         .then(data => {
-          console.log(data.results)
-          this.recommendedMovies = data.results
+          console.log('Películas recomendadas:', data.results);
+          this.recommendedMovies = data.results;
         })
         .catch(error => {
-          console.error('Error al obtener películas recomendadas: ' + error)
-        })
+          console.error('Error al obtener películas recomendadas: ' + error);
+        });
     },
     getLanguageFullName(abbr) {
       const languageMap = {
@@ -283,7 +282,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchMovieDetails()
+    this.fetchMovieDetails();
   },
 }
 </script>
@@ -295,17 +294,22 @@ body {
 }
 
 #movieDetails {
-  padding: 20px;
+  overflow-x: hidden;
 }
 
 .movie-content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start; /* Alineación a la izquierda */
+}
+
+.movie-details {
+  display: flex; /* Usamos flex para alinear el poster y la información */
+  margin-top: 20px; /* Añade margen superior si es necesario */
 }
 
 .movie-poster {
-  width: 300px;
+  width: 400px;
   height: auto;
   margin-right: 20px;
 }
@@ -446,7 +450,8 @@ body {
   border: none;
   cursor: pointer;
 }
-select{
+
+select {
   width: 150px;
   border-radius: 8px;
   margin-right: 8px;

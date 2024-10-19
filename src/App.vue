@@ -82,6 +82,8 @@ header {
   background-color: var(--color-primary);
   width: 100%;
   position: fixed;
+  z-index: 1000;
+
 
   .header-section {
     margin-right: 2.5rem;

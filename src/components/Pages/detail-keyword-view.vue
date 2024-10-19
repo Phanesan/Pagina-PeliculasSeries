@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     getMovies() {
-      const keywordId = 180547;
+      const keywordId = 1701;
       fetch(
         `https://api.themoviedb.org/3/discover/movie?api_key=13c164db7b0cbbc91a51acf2fcc65f79&with_keywords=${keywordId}`,
       )
@@ -63,9 +63,13 @@ export default {
 <style>
 #main {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   padding: 20px;
+  justify-content: center;
+  justify-items: center;
+  max-width: 1200px; 
+  margin: 0 auto; 
 }
 
 .card {

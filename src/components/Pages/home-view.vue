@@ -7,5 +7,10 @@
 <script>
 export default {
   name: 'HomeView',
+  props: {
+    payload: {
+      type: Object
+    }
+  }
 }
 </script>

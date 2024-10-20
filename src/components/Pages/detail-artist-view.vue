@@ -1,5 +1,4 @@
 <template>
-  <button @click="$emit('changePage', 'Login')" class="home-button">Home</button>
 
   <div class="artist-details-container">
     <div class="artist-info">

@@ -1,6 +1,4 @@
 <template>
-  <button @click="$emit('changePage', 'Login')" class="home-button">Home</button>
-
   <div class="artist-details-container">
     <div class="artist-info">
       <div class="left-column">
@@ -64,7 +62,9 @@
 
 export default {
   name: 'DetailArtistView',
-
+  props: {
+    payload: Object
+  },
   data() {
     return {
       actor: {},
@@ -89,8 +89,8 @@ export default {
 
   methods: {
     getActorDetails() {
-      const actorId = new URLSearchParams(window.location.search).get('id');
-      fetch(`https://api.themoviedb.org/3/person/55638?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
+      const actorId = this.payload.id;
+      fetch(`https://api.themoviedb.org/3/person/${actorId}?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
         .then(response => response.json())
         .then(data => {
           this.actor = data;
@@ -102,7 +102,7 @@ export default {
     },
 
     getActorMoviesAndSeries(actorId) {
-      fetch(`https://api.themoviedb.org/3/person/55638/combined_credits?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
+      fetch(`https://api.themoviedb.org/3/person/${actorId}/combined_credits?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
         .then(response => response.json())
         .then(data => {
           this.moviesAndSeries = data.cast;

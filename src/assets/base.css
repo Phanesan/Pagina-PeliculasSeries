@@ -5,6 +5,7 @@
   --palatinate-blue: #232ed1ff;
   --oxford-blue: #101d42ff;
   --rich-black: #0d1317ff;
+  --success: #4bb543;
 }
 
 /* semantic color variables for this project */
@@ -14,6 +15,7 @@
   --color-primary: var(--slate-blue);
   --color-secondary: var(--oxford-blue);
   --color-accent: var(--palatinate-blue);
+  --color-error: #ff0000;
 }
 
 *,

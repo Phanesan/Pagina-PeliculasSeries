@@ -1,27 +1,27 @@
 <template>
   <div id="main" class="categories">
-    <div v-if="items.length > 0">
-      <div class="genre-filter">
-        <label for="media-type">Tipo:</label>
-        <select id="media-type" v-model="mediaType" @change="getItemsByCategory">
-          <option value="movie">Películas</option>
-          <option value="tv">Series</option>
-        </select>
-        
-        <label for="genre">Género:</label>
-        <input type="text" id="genre" :value="genreName" readonly />
-      </div>
+    <div class="genre-filter">
+      <label for="media-type">Tipo:</label>
+      <select id="media-type" v-model="mediaType" @change="getItemsByCategory">
+        <option value="movie">Películas</option>
+        <option value="tv">Series</option>
+      </select>
+      
+      <label class="genre" for="genre">Género:</label>
+      <input type="text" id="genre" :value="genreName" readonly />
+    </div>
 
+    <div v-if="items.length > 0">
       <div class="item-list">
         <div class="item" v-for="item in items" :key="item.id">
           <div class="poster">
-            <img :src="'https://www.themoviedb.org/t/p/w200/' + (mediaType === 'movie' ? item.poster_path : item.poster_path)" alt="item poster">
+            <img :src="'https://www.themoviedb.org/t/p/w200/' + item.poster_path" alt="item poster">
           </div>
           <div class="item-details">
             <h2>{{ mediaType === 'movie' ? item.title : item.name }}</h2>
-            <p>{{ item.overview }}</p>
             <p>Fecha de Publicación: {{ mediaType === 'movie' ? item.release_date : item.first_air_date }}</p>
-            <button :href="mediaType === 'movie' ? 'movie.html?id=' + item.id : 'tv.html?id=' + item.id" class="view-more">Ver detalles</button>
+            <p>{{ item.overview }}</p>
+            <button @click="$emit('changePage', 'DetailMovie', { id: item.id })" class="view-more">Ver detalles</button>
           </div>
         </div>
       </div>
@@ -35,6 +35,9 @@
 <script>
 export default {
   name: 'DetailCategoryView',
+  props: {
+    payload: Object
+  },
 
   data() {
     return {
@@ -45,7 +48,7 @@ export default {
   },
   methods: {
     getItemsByCategory() {
-      const categoryId = 35; 
+      const categoryId = this.payload.id; 
       const endpoint = this.mediaType === 'movie' ? 'discover/movie' : 'discover/tv';
 
       fetch(`https://api.themoviedb.org/3/${endpoint}?with_genres=${categoryId}&sort_by=popularity.desc&api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
@@ -100,6 +103,9 @@ export default {
 .genre-filter label {
   margin-right: 10px;
 }
+.genre{
+  margin-left: 10px;
+}
 
 #genre {
   padding: 5px;
@@ -121,7 +127,7 @@ export default {
   background-color: var(--oxford-blue);
   padding: 10px;
   border-radius: 8px;
-  align-items: stretch; /* Asegura que todas las tarjetas tengan la misma altura */
+  align-items: stretch; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -139,7 +145,7 @@ export default {
 .item-details {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Distribuye el contenido de manera uniforme */
+  justify-content: space-between; 
   align-items: flex-start; 
   flex-grow: 1;
 }
@@ -157,17 +163,18 @@ export default {
 }
 
 
-button {
+.view-more {
   padding: 8px 12px;
-  background-color: #007bff;
+  background-color: var(--palatinate-blue);
   color: #ffffff;
   border: none;
+  margin-left: 90%;
   border-radius: 4px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
+.view-more:hover {
+  background-color:var(--slate-blue);
 }
 
 @media (min-width: 1000px) {

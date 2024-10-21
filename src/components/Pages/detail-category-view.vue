@@ -33,7 +33,7 @@
             <h2>{{ mediaType === 'movie' ? item.title : item.name }}</h2>
             <p>Fecha de Publicación: {{ mediaType === 'movie' ? item.release_date : item.first_air_date }}</p>
             <p>{{ item.overview }}</p>
-            <button @click="$emit('changePage', 'DetailMovie', { id: item.id })" class="view-more">Ver detalles</button>
+            <button @click="$emit('changePage', mediaType === 'tv' ? 'DetailSeries' : 'DetailMovie', { id: item.id })" class="view-more">Ver detalles</button>
           </div>
         </div>
       </div>

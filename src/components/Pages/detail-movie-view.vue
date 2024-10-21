@@ -76,7 +76,9 @@
             <h2>Géneros</h2>
             <span v-for="(genre, index) in movie.genres" :key="genre.id">
               <button
-                @click="redirectToCategory(genre.id)"
+                @click="
+                  $emit('changePage', 'DetailCategory',{ id: genre.id })
+                "
                 class="genre-button"
               >
                 {{ genre.name }}
@@ -134,7 +136,7 @@
             class="actor-item"
             v-for="(actor, index) in cast"
             :key="actor.cast_id"
-            @click="viewActor(actor)"
+            @click="$emit('changePage', 'DetailArtist', { id: actor.id })"
           >
             <img
               v-if="actor.profile_path"
@@ -361,9 +363,6 @@ export default {
           console.log(error)
         })
     },
-    redirectToCategory(genreId) {
-      this.$emit('changePage', 'DetailCategory', { genreId })
-    },
     fetchRecommendedMovies(movieId) {
       fetch(
         `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${this.apiKey}&language=es-LA&page=1`,
@@ -390,12 +389,6 @@ export default {
         ru: 'Ruso',
       }
       return languageMap[abbr] || abbr
-    },
-    viewActor(actor) {
-      this.$emit('changePage', 'DetailArtist', {
-        actorId: actor.id,
-        actorName: actor.name,
-      })
     },
   },
   mounted() {

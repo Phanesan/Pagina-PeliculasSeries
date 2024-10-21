@@ -12,7 +12,7 @@ import DetailCategory from './components/Pages/detail-category-view.vue'
 <template>
   <nav id="menu">
     <header>
-      <img src="../public/ihne.ico" class="icon" />
+      <img src="../public/favicon.ico" class="icon" />
       <input
         type="checkbox"
         id="responsive-menu"

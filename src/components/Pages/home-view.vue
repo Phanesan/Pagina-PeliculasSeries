@@ -1,5 +1,6 @@
 <template>
   <p>Home</p>
+  <button @click="$emit('changePage', 'DetailArtist')" class="home-button">Login</button>
 </template>
 
 <script>

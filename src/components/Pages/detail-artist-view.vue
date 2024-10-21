@@ -44,12 +44,14 @@
         <h3>Conocido por:</h3>
         <div class="movies-known-for">
           <div class="scrollable-container">
-            <div v-for="item in filteredMedia" :key="item.id" class="movie-item">
+            <div v-for="item in filteredMedia" :key="item.id" class="movie-item"
+            @click="$emit('changePage', item.media_type === 'tv' ? 'DetailSeries' : 'DetailMovie', { id: item.id })">
               <img  v-if="item.poster_path" 
               :src="'https://www.themoviedb.org/t/p/w200/' + item.poster_path" :alt="item.title || item.name"
-                class="movie-poster">
+                class="movie-poster"
+                @click="$emit('changePage', item.media_type === 'tv' ? 'DetailSeries' : 'DetailMovie', { id: item.id })">
                 <img v-else src="../../assets/img/movie.png" class="poster-image" />
-              <p @click="$emit('changePage', 'DetailMovie', { id: item.id })">{{ item.title || item.name }}</p>
+              <p @click="$emit('changePage', item.media_type === 'tv' ? 'DetailSeries' : 'DetailMovie', { id: item.id })">{{ item.title || item.name }}</p>
             </div>
           </div>
         </div>
@@ -59,7 +61,7 @@
           <div class="timeline-item" v-for="item in moviesAndSeries" :key="item.id">
             <div class="timeline-date">{{ item.release_date || 'Sin fecha' }}</div>
             <div class="timeline-content">
-              <a @click="$emit('changePage', 'DetailMovie', { id: item.id })">{{ item.title || item.name }}</a>
+              <a @click="$emit('changePage', item.media_type === 'tv' ? 'DetailSeries' : 'DetailMovie', { id: item.id })">{{ item.title || item.name }}</a>
               <p>Papel: {{ item.character || 'Desconocido' }}</p>
             </div>
           </div>

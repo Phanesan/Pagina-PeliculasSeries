@@ -42,6 +42,36 @@
             🎬 Ver Tráiler
           </button>
 
+          <input
+            v-model="isFavorite"
+            @click="toggleFavorite"
+            name="favorite-checkbox"
+            id="favorite"
+            type="checkbox"
+          />
+          <label class="containerFavorite" for="favorite">
+            <svg
+              class="feather feather-heart"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 24 24"
+              height="24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              ></path>
+            </svg>
+            <div class="action">
+              <span v-if="!isFavorite">Añadir a favoritos</span>
+              <span v-else>Añadido a favoritos</span>
+            </div>
+          </label>
+
           <div class="movie-genres">
             <h2>Géneros</h2>
             <span v-for="(genre, index) in movie.genres" :key="genre.id">
@@ -167,6 +197,7 @@ export default {
       recommendedMovies: [],
       apiKey: import.meta.env.VITE_API_KEY,
       rating: 'undefined',
+      isFavorite: true,
     }
   },
   methods: {
@@ -236,6 +267,45 @@ export default {
         console.error('Error al obtener el tráiler: ' + error)
         return null
       }
+    },
+
+    fetchAccountState(movieId) {
+      fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/account_states?session_id=${localStorage.getItem('session_id')}&api_key=${this.apiKey}`,
+      )
+        .then(response => response.json())
+        .then(data => {
+          this.isFavorite = data.favorite
+        })
+        .catch(error => {
+          console.error('Error al obtener el estado de la película: ' + error)
+        })
+    },
+    toggleFavorite() {
+      let data = JSON.stringify({
+        media_type: 'movie',
+        media_id: this.movie.id,
+        favorite: this.isFavorite ? false : true,
+      })
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `https://api.themoviedb.org/3/account/${JSON.parse(localStorage.getItem('user')).id}/favorite?session_id=${localStorage.getItem('session_id')}&api_key=${this.apiKey}`,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: data,
+      }
+
+      axios
+        .request(config)
+        .then(response => {
+          console.log(JSON.stringify(response.data))
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     async watchTrailer() {
       const trailerKey = await this.fetchMovieTrailer(this.movie.id)
@@ -345,11 +415,93 @@ export default {
       .catch(error => {
         console.log(error)
       })
+
+    this.fetchAccountState(this.payload.id)
   },
 }
 </script>
 
 <style>
+.containerFavorite {
+  background-color: rgb(36, 36, 36);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 15px 10px 10px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 10px;
+  box-shadow: rgba(46, 46, 46, 0.2) 0px 8px 24px;
+  color: rgb(255, 255, 255);
+  width: 195px;
+}
+
+#favorite {
+  display: none;
+}
+
+#favorite:checked + .containerFavorite svg {
+  fill: hsl(0deg 100% 50%);
+  stroke: hsl(0deg 100% 50%);
+  animation: heartButton 1s;
+}
+
+@keyframes heartButton {
+  0% {
+    transform: scale(1);
+  }
+
+  25% {
+    transform: scale(1.3);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+#favorite + .containerFavorite .action {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+}
+
+#favorite + .containerFavorite .action span {
+  grid-column-start: 1;
+  grid-column-end: 1;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  transition: all 0.5s;
+}
+
+#favorite + .containerFavorite .action span.option-1 {
+  transform: translate(0px, 0%);
+  opacity: 1;
+}
+
+#favorite:checked + .containerFavorite .action span.option-1 {
+  transform: translate(0px, -100%);
+  opacity: 0;
+}
+
+#favorite + .containerFavorite .action span.option-2 {
+  transform: translate(0px, 100%);
+  opacity: 0;
+}
+
+#favorite:checked + .containerFavorite .action span.option-2 {
+  transform: translate(0px, 0%);
+  opacity: 1;
+}
+
 body {
   margin: 0;
   padding: 0;

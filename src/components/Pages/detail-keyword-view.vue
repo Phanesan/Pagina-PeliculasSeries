@@ -1,6 +1,7 @@
 <template>
   <div id="container">
-    <h1 id="keyword-title">{{ keywordName }}</h1>
+    <h3 class="subtitle">Palabra Clave</h3>
+    <h1 id="keyword-title" class="palabraClave">{{ keywordName }}</h1>
 
     <h2 class="section-title">Películas</h2>
     <div class="scrollable-container">
@@ -74,13 +75,14 @@ export default {
       movies: [],
       series: [],
       keywordName: this.payload.keywordName,
+      popularityFilter: 'popularity.desc',
     }
   },
   methods: {
     getMovies() {
       const keywordId = this.payload.keywordId
       fetch(
-        `https://api.themoviedb.org/3/discover/movie?api_key=13c164db7b0cbbc91a51acf2fcc65f79&with_keywords=${keywordId}`,
+        `https://api.themoviedb.org/3/discover/movie?api_key=13c164db7b0cbbc91a51acf2fcc65f79&with_keywords=${keywordId}&sort_by=${this.popularityFilter}&language=es-LA`,
       )
         .then(response => response.json())
         .then(data => {
@@ -93,7 +95,7 @@ export default {
     getSeries() {
       const keywordId = this.payload.keywordId
       fetch(
-        `https://api.themoviedb.org/3/discover/tv?api_key=13c164db7b0cbbc91a51acf2fcc65f79&with_keywords=${keywordId}`,
+        `https://api.themoviedb.org/3/discover/tv?api_key=13c164db7b0cbbc91a51acf2fcc65f79&with_keywords=${keywordId}&sort_by=${this.popularityFilter}&language=es-LA`,
       )
         .then(response => response.json())
         .then(data => {
@@ -142,13 +144,25 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  padding-bottom: -50px;
 }
 
 #keyword-title {
   font-size: 32px;
   color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   text-align: center;
+  text-transform: capitalize;
+  background-color: var(--oxford-blue);
+  border-radius: 8px;
+  box-shadow: #555;
+  width: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.subtitle {
+  color: var(--color-text);
 }
 
 .section-title {
@@ -174,7 +188,7 @@ export default {
 .card {
   min-width: 250px;
   max-width: 300px;
-  background-color: #f0f0f0;
+  background-color: #fafafa;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -183,6 +197,10 @@ export default {
   display: flex;
   flex-direction: column;
   height: 600px;
+}
+
+.card > h2 {
+  color: var(--oxford-blue);
 }
 
 .card:hover {

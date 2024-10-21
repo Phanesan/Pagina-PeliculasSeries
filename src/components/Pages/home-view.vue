@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="homePage">
     <div class="container">
       <img src="../../assets/img/banner.jpg" class="banner" />
       <h1>Tendencias</h1>
@@ -253,14 +253,9 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
 }
 
-.container {
-  width: 43%;
-  margin: auto;
-  padding: 20px;
-
+#homePage {
   .button {
     text-align: center;
     display: inline-block;
@@ -276,67 +271,74 @@ body {
   .button:hover {
     background-color: rgb(8, 16, 34);
   }
-}
 
-h1 {
-  text-align: left;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  color: white;
-}
+  overflow-x: hidden;
+  .container {
+    width: 100%;
+    margin: auto;
+    padding: 20px;
+  }
 
-.card-container {
-  display: flex;
-  overflow-x: auto;
-  gap: 1rem;
-  scroll-behavior: smooth;
-  padding: 1rem 0;
-  max-width: 100%;
-}
+  h1 {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: white;
+  }
 
-.card {
-  width: 200px;
-  background-color: #d0dcff;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-shrink: 0;
-  color: #202020;
-}
+  .card-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    scroll-behavior: smooth;
+    padding: 1rem 0;
+    max-width: 100%;
+  }
 
-.card img {
-  max-width: 100%;
-  border-radius: 8px;
-  cursor: pointer;
-}
+  .card {
+    width: 200px;
+    background-color: #d0dcff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+    color: #202020;
+  }
 
-.card h3 {
-  font-weight: bold;
-  margin-top: 10px;
-  margin-bottom: 5px;
-  cursor: default;
-}
+  .card img {
+    max-width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+  }
 
-.card h3:hover {
-  cursor: pointer;
-  color: rgb(3, 22, 97);
-  text-decoration: underline;
-}
+  .card h3 {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    cursor: default;
+  }
 
-.card p {
-  margin: 3px 0;
-}
+  .card h3:hover {
+    cursor: pointer;
+    color: rgb(3, 22, 97);
+    text-decoration: underline;
+  }
 
-.banner {
-  width: 100%;
-  height: auto;
-  max-height: 500px;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto;
+  .card p {
+    margin: 3px 0;
+  }
+
+  .banner {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+  }
 }
 </style>

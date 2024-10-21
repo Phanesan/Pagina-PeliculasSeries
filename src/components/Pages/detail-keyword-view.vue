@@ -13,7 +13,7 @@
           class="card"
           v-for="movie in movies"
           :key="movie.id"
-          @click="viewMovie(movie)"
+          @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
         >
           <img
             :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
@@ -41,7 +41,7 @@
         class="card"
         v-for="serie in series"
         :key="serie.id"
-        @click="viewSerie(serie)"
+        @click="$emit('changePage', 'DetailSeries', { id: serie.id })"
       >
         <img
           :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${serie.poster_path}`"
@@ -104,16 +104,6 @@ export default {
         .catch(error => {
           console.error('Error: ' + error)
         })
-    },
-    viewMovie(movie) {
-      this.$emit('changePage', 'DetailMovie', {
-        id: movie.id,
-        movieTitle: movie.title,
-      })
-    },
-    viewSerie(serie) {
-      const serieId = serie.id
-      window.location.href = `serie.html?id=${serieId}`
     },
     getLanguageFullName(abbr) {
       const languageMap = {

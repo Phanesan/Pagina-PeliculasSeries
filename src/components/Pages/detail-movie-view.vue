@@ -12,7 +12,12 @@
           :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
           alt="movie poster"
         />
-        <img v-else src="../../assets/img/movie.png" class="movie-poster" alt="">
+        <img
+          v-else
+          src="../../assets/img/movie.png"
+          class="movie-poster"
+          alt=""
+        />
         <div class="movie-info">
           <h1 class="movie-title">{{ movie.title }}</h1>
           <h3 class="movie-tagline">{{ movie.tagline }}</h3>
@@ -78,9 +83,7 @@
             <h2>Géneros</h2>
             <span v-for="(genre, index) in movie.genres" :key="genre.id">
               <button
-                @click="
-                  $emit('changePage', 'DetailCategory',{ id: genre.id })
-                "
+                @click="$emit('changePage', 'DetailCategory', { id: genre.id })"
                 class="genre-button"
               >
                 {{ genre.name }}
@@ -207,7 +210,6 @@ export default {
   methods: {
     fetchMovieDetails() {
       const movieId = this.payload.id
-      console.log(movieId)
       fetch(
         `https://api.themoviedb.org/3/movie/${movieId}?api_key=${this.apiKey}&language=es-LA`,
       )
@@ -322,12 +324,8 @@ export default {
     saveRating(n) {
       const movieId = this.movie.id
       const sessionId = localStorage.getItem('session_id')
-      if (!sessionId) {
-        alert('No hay sesión activa. Asegúrate de haber iniciado sesión.')
-        return
-      }
       const data = JSON.stringify({ value: n })
-      console.log(data)
+
       axios
         .post(
           `https://api.themoviedb.org/3/movie/${movieId}/rating?session_id=${sessionId}&api_key=${this.apiKey}`,

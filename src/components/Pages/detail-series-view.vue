@@ -3,7 +3,6 @@ import axios from 'axios'
 </script>
 
 <template>
-  <!--Se usa la API de MovieDB -->
   <div class="series-details" v-if="seriesData && castData && recommendationsData">
     <div class="series-top">
       <div class="banner-series">
@@ -148,6 +147,10 @@ import axios from 'axios'
               alt="Poster de {{ season.name }}"
               class="season-image"
             />
+            <img
+              v-else
+              src="../../assets/img/seriesPlaceholder.png"
+              class="season-image" />
             <p>
               <strong>{{ season.name }}</strong>
             </p>
@@ -349,6 +352,8 @@ export default {
         img {
           border-top-left-radius: 8px;
           border-top-right-radius: 8px;
+          width: 180px;
+          height: 255px;
         }
       }
     }

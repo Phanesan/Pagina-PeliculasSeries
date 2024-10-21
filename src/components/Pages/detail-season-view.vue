@@ -26,7 +26,7 @@
             />
             <img
               v-else
-              src="../../assets/img/seriesPlaceHolder.png"
+              src="../../assets/img/seriesPlaceholder.png"
               alt="Placeholder"
             />
           </div>

@@ -53,6 +53,17 @@
             </div>
           </div>
         </div>
+
+        <h3 class="timeline-title">Películas y papeles que ha interpretado:</h3>
+        <div class="timeline">
+          <div class="timeline-item" v-for="item in moviesAndSeries" :key="item.id">
+            <div class="timeline-date">{{ item.release_date || 'Sin fecha' }}</div>
+            <div class="timeline-content">
+              <a @click="$emit('changePage', 'DetailMovie', { id: item.id })">{{ item.title || item.name }}</a>
+              <p>Papel: {{ item.character || 'Desconocido' }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -63,7 +74,9 @@
 export default {
   name: 'DetailArtistView',
   props: {
-    payload: Object
+    payload: {
+      type: Object
+    }
   },
   data() {
     return {
@@ -94,6 +107,7 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.actor = data;
+          
           this.getActorMoviesAndSeries(actorId);
         })
         .catch(error => {
@@ -105,7 +119,8 @@ export default {
       fetch(`https://api.themoviedb.org/3/person/${actorId}/combined_credits?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
         .then(response => response.json())
         .then(data => {
-          this.moviesAndSeries = data.cast;
+          this.moviesAndSeries = data.cast.sort((a, b) => new Date(b.release_date || b.first_air_date) - new Date(a.release_date || a.first_air_date));
+
           this.knownCredits = data.cast.length;
         })
         .catch(error => {
@@ -144,7 +159,7 @@ export default {
   display: flex;
   flex-direction: column;
   margin-left: 130px;
-  padding: 105px;
+  padding: 55px;
   background-color: var(--rich-black);
   color: #e0e0e0;
   font-family: Arial, sans-serif;
@@ -268,7 +283,7 @@ export default {
 }
 
 .scrollable-container::-webkit-scrollbar-thumb {
-  background-color: #8888886e;
+  background-color: #0000006e;
   border-radius: 4px;
 }
 
@@ -286,4 +301,78 @@ export default {
   width: 150px;
   height: 225px;
 }
+
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 40px;
+  margin-top: 20px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ffffff; 
+}
+
+.timeline-item {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #007bff; 
+  border-radius: 50%;
+}
+
+.timeline-date {
+  padding-left: 6px;
+  padding-bottom: 4px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.timeline-content {
+  margin-left: 20px;
+  background-color: #1a1a2e; 
+  padding: 15px;
+  border-radius: 8px;
+  color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+  border: 1px solid #007bff; 
+}
+
+.timeline-content a {
+  color: #ffcc00; 
+  text-decoration: none;
+  cursor: default;
+}
+
+.timeline-content a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.timeline-content p {
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.timeline-title {
+  font-weight: bold;
+  padding-top: 30px;
+}
+
 </style>

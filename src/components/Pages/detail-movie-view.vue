@@ -272,7 +272,6 @@ export default {
         return null
       }
     },
-
     fetchAccountState(movieId) {
       fetch(
         `https://api.themoviedb.org/3/movie/${movieId}/account_states?session_id=${localStorage.getItem('session_id')}&api_key=${this.apiKey}`,

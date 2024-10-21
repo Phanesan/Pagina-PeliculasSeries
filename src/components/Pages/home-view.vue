@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="container">
-      <img src="../../assets/images/banner.jpg" class="banner" />
+      <img src="../../assets/img/banner.jpg" class="banner" />
       <h1>Tendencias</h1>
       <div class="card-container" ref="carousel">
         <div

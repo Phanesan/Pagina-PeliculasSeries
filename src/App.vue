@@ -18,10 +18,10 @@ import DetailCategory from './components/Pages/detail-category-view.vue'
         id="responsive-menu"
         onclick="updatemenu()"
       /><label></label>
-      <ul>
-        <li v-if="currentPage !== 'Login'">
-          <a @click="goToHome">Home</a>
-        </li>
+      <div class="home" v-if="currentPage !== 'Login'">
+        <a @click="goToHome">Home</a>
+      </div>
+      <ul class="optionsNavBar">
         <li>
           <div class="logout-section" v-if="currentPage !== 'Login'">
             <button class="Btn" @click="logout">
@@ -205,7 +205,6 @@ header {
   height: 50px;
   padding-right: 18px;
   border-radius: 10px;
-  border: 1px solid #10326d;
 }
 #menu ul,
 #menu li {
@@ -220,6 +219,11 @@ header {
 #menu li {
   display: inline-block;
   position: relative;
+}
+#menu .home {
+  background-color: var(--color-primary);
+  border-radius: 13px;
+  margin-left: 1.5rem;
 }
 #menu a {
   display: block;

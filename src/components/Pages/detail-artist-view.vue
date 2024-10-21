@@ -1,5 +1,7 @@
 <template>
   <div class="artist-details-container">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <div class="artist-info">
       <div class="left-column">
         <img v-if="actor.profile_path"
@@ -8,15 +10,32 @@
         <img v-else src="../../assets/img/user.png" class="actor-image" />
         <p><strong>Información personal</strong></p>
 
+        <ul class="redes-sociales">
+          <li v-if="facebook" class="icon facebook" @click="redirectionFacebook">
+            <span class="tooltip">Facebook</span>
+            <span><i class="fab fa-facebook-f"></i></span>
+          </li>
+          <li v-if="twitter" class="icon twitter" @click="redirectionTwitter">
+            <span class="tooltip">Twitter</span>
+            <span><i class="fab fa-twitter"></i></span>
+          </li>
+          <li v-if="instagram" class="icon instagram" @click="redirectionInstagram">
+            <span class="tooltip">Instagram</span>
+            <span><i class="fab fa-instagram"></i></span>
+          </li>
+        </ul>
+
         <p><strong>Conocido por:</strong> <br> Actuando</p>
 
         <p><strong>Créditos conocidos:</strong> <br> {{ knownCredits }}</p>
 
         <p><strong>Sexo:</strong> <br> {{ actor.gender === 1 ? 'Mujer' : 'Hombre' }}</p>
 
-        <p><strong>Cumpleaños:</strong> <br> {{ actor.birthday ? formatBirthday(actor.birthday) : 'Desconocido' }}</p>
+        <p><strong>Fecha de nacimiento:</strong> <br> {{ actor.birthday ? formatBirthday(actor.birthday) : 'Desconocido' }}</p>
 
         <p><strong>Lugar de Nacimiento:</strong> <br> {{ actor.place_of_birth || 'Desconocido' }}</p>
+
+       
 
         <p><strong>También Conocido Como:</strong></p>
         <ul>
@@ -90,7 +109,10 @@ export default {
       filter: 'movie',
       isExpanded: false,
       maxBiographyLength: 1000,
-      knownCredits: 0
+      knownCredits: 0,
+      facebook: null,
+      twitter: null,
+      instagram: null
     };
   },
 
@@ -112,8 +134,8 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.actor = data;
-
           this.getActorMoviesAndSeries(actorId);
+          this.getActorSocials(actorId);
         })
         .catch(error => {
           console.error("Error al obtener los detalles del artista:", error);
@@ -151,6 +173,34 @@ export default {
       const ageDiffMs = Date.now() - new Date(birthday).getTime();
       const ageDate = new Date(ageDiffMs);
       return Math.abs(ageDate.getUTCFullYear() - 1970);
+    },
+    getActorSocials(actorId) {
+      fetch(`https://api.themoviedb.org/3/person/${actorId}/external_ids?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Datos obtenidos de redes sociales:", data);  
+
+          this.facebook = data.facebook_id;
+          this.instagram = data.instagram_id;
+          this.twitter = data.twitter_id;
+
+          console.log("Facebook:", this.facebook);  
+          console.log("Instagram:", this.instagram);  
+          console.log("Twitter:", this.twitter);
+
+        })
+        .catch(error => {
+          console.error("Error al obtener las redes sociales del artista:", error);
+        });
+    },
+    redirectionFacebook() {
+      window.open(`https://www.facebook.com/${this.facebook}`, '_blank');
+    },
+    redirectionTwitter() {
+      window.open(`https://twitter.com/${this.twitter}`, '_blank');
+    },
+    redirectionInstagram() {
+      window.open(`https://www.instagram.com/${this.instagram}`, '_blank');
     },
   },
 
@@ -247,6 +297,7 @@ export default {
   .movies-known-for {
     display: flex;
     flex-wrap: wrap;
+    cursor: pointer;
   }
 
   .toggle-biography-button {
@@ -273,7 +324,6 @@ export default {
     display: flex;
     overflow-x: auto;
     gap: 10px;
-
     position: relative;
   }
 
@@ -380,5 +430,57 @@ export default {
     font-weight: bold;
     padding-top: 30px;
   }
+
+  .redes-sociales {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .redes-sociales li {
+    list-style: none;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+
+  .redes-sociales li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .redes-sociales .icon {
+    font-size: 1.5em;
+    color: white;
+  }
+
+  .redes-sociales .facebook {
+    color: #f8faff;
+  }
+
+  .redes-sociales .twitter {
+    color: #f8faff;
+  }
+
+  .redes-sociales .instagram {
+    color: #f8faff;
+  }
+
+  .tooltip {
+    display: none;
+  }
+
+  .redes-sociales li:hover .tooltip {
+    display: block;
+    position: absolute;
+    bottom: 120%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
 }
 </style>

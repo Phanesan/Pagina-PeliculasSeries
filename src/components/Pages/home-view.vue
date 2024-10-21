@@ -12,10 +12,14 @@
           <img
             :src="getImageUrl(popularMovie.poster_path)"
             alt="Popular Movie Poster"
-            @click="$emit('changePage', 'DetailMovie', { id })"
+            @click="$emit('changePage', 'DetailMovie', { id: popularMovie.id })"
           />
           <div>
-            <h3 @click="$emit('changePage', 'DetailMovie', { id })">
+            <h3
+              @click="
+                $emit('changePage', 'DetailMovie', { id: popularMovie.id })
+              "
+            >
               {{ popularMovie.title }}
             </h3>
             <p>Fecha de estreno</p>
@@ -23,7 +27,9 @@
             <p>Popularidad</p>
             <p>{{ popularMovie.vote_average.toFixed(1) }}</p>
           </div>
-          <a class="button" @click="$emit('changePage', 'DetailMovie', { id })"
+          <a
+            class="button"
+            @click="$emit('changePage', 'DetailMovie', { id: popularMovie.id })"
             >Ver Detalles</a
           >
         </div>
@@ -35,10 +41,10 @@
           <img
             :src="getImageUrl(movie.poster_path)"
             alt="Movie Poster"
-            @click="$emit('changePage', 'DetailMovie', { id })"
+            @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
           />
           <div>
-            <h3 @click="$emit('changePage', 'DetailMovie', { id })">
+            <h3 @click="$emit('changePage', 'DetailMovie', { id: movie.id })">
               {{ movie.title }}
             </h3>
             <p>Fecha de estreno</p>
@@ -46,7 +52,9 @@
             <p>Popularidad</p>
             <p>{{ movie.vote_average.toFixed(1) }}</p>
           </div>
-          <a class="button" @click="$emit('changePage', 'DetailMovie', { id })"
+          <a
+            class="button"
+            @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
             >Ver Detalles</a
           >
         </div>
@@ -58,10 +66,10 @@
           <img
             :src="getImageUrl(movie.poster_path)"
             alt="Movie Poster"
-            @click="$emit('changePage', 'DetailMovie', { id })"
+            @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
           />
           <div>
-            <h3 @click="$emit('changePage', 'DetailMovie', { id })">
+            <h3 @click="$emit('changePage', 'DetailMovie', { id: movie.id })">
               {{ movie.title }}
             </h3>
             <p>Fecha de estreno</p>
@@ -69,7 +77,9 @@
             <p>Popularidad</p>
             <p>{{ movie.vote_average.toFixed(1) }}</p>
           </div>
-          <a class="button" @click="$emit('changePage', 'DetailMovie', { id })"
+          <a
+            class="button"
+            @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
             >Ver Detalles</a
           >
         </div>
@@ -85,10 +95,10 @@
           <img
             :src="getImageUrl(tvShow.poster_path)"
             alt="TV Show Poster"
-            @click="$emit('changePage', 'DetailSeries', { id })"
+            @click="$emit('changePage', 'DetailSeries', { id: tvShow.id })"
           />
           <div>
-            <h3 @click="$emit('changePage', 'DetailSeries', { id })">
+            <h3 @click="$emit('changePage', 'DetailSeries', { id: tvShow.id })">
               {{ tvShow.name }}
             </h3>
             <p>Fecha de estreno</p>
@@ -96,7 +106,9 @@
             <p>Popularidad</p>
             <p>{{ tvShow.vote_average.toFixed(1) }}</p>
           </div>
-          <a class="button" @click="$emit('changePage', 'DetailSeries', { id })"
+          <a
+            class="button"
+            @click="$emit('changePage', 'DetailSeries', { id: tvShow.id })"
             >Ver Detalles</a
           >
         </div>

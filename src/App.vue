@@ -83,7 +83,7 @@ export default {
     const token = localStorage.getItem('payload')
 
     if (token !== null) {
-      this.changePage('Home')
+      this.changePage('DetailSeason')
     }
   },
 }

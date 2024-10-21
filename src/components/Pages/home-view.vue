@@ -10,8 +10,15 @@
           :key="index"
         >
           <img
+            v-if="popularMovie.poster_path"
             :src="getImageUrl(popularMovie.poster_path)"
             alt="Popular Movie Poster"
+            @click="$emit('changePage', 'DetailMovie', { id: popularMovie.id })"
+          />
+          <img
+            v-else
+            src="../../assets/img/movie.png"
+            alt="Placeholder"
             @click="$emit('changePage', 'DetailMovie', { id: popularMovie.id })"
           />
           <div>
@@ -39,8 +46,15 @@
       <div class="card-container" ref="carousel">
         <div class="card" v-for="(movie, index) in topRatedMovies" :key="index">
           <img
+            v-if="movie.poster_path"
             :src="getImageUrl(movie.poster_path)"
             alt="Movie Poster"
+            @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
+          />
+          <img
+            v-else
+            src="../../assets/img/movie.png"
+            alt="Placeholder"
             @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
           />
           <div>
@@ -64,8 +78,15 @@
       <div class="card-container" ref="carousel">
         <div class="card" v-for="(movie, index) in freeWatch" :key="index">
           <img
+            v-if="movie.poster_path"
             :src="getImageUrl(movie.poster_path)"
             alt="Movie Poster"
+            @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
+          />
+          <img
+            v-else
+            src="../../assets/img/movie.png"
+            alt="Placeholder"
             @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
           />
           <div>
@@ -93,8 +114,15 @@
           :key="index"
         >
           <img
+            v-if="tvShow.poster_path"
             :src="getImageUrl(tvShow.poster_path)"
             alt="TV Show Poster"
+            @click="$emit('changePage', 'DetailSeries', { id: tvShow.id })"
+          />
+          <img
+            v-else
+            src="../../assets/img/movie.png"
+            alt="Placeholder"
             @click="$emit('changePage', 'DetailSeries', { id: tvShow.id })"
           />
           <div>

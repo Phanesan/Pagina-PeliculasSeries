@@ -248,6 +248,22 @@ body {
   width: 43%;
   margin: auto;
   padding: 20px;
+
+  .button {
+    text-align: center;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: var(--oxford-blue);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    background-color: rgb(8, 16, 34);
+  }
 }
 
 h1 {
@@ -301,21 +317,6 @@ h1 {
 
 .card p {
   margin: 3px 0;
-}
-.button {
-  text-align: center;
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 15px;
-  background-color: var(--oxford-blue);
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.button:hover {
-  background-color: rgb(8, 16, 34);
 }
 
 .banner {

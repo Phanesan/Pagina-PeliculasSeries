@@ -16,9 +16,11 @@
           @click="$emit('changePage', 'DetailMovie', { id: movie.id })"
         >
           <img
+            v-if="movie.poster_path"
             :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
             alt="movie poster"
           />
+          <img v-else src="../../assets/img/user.png" />
           <h2>{{ movie.title }}</h2>
           <p>
             <strong>📅:</strong>
@@ -44,9 +46,11 @@
         @click="$emit('changePage', 'DetailSeries', { id: serie.id })"
       >
         <img
+          v-if="serie.poster_path"
           :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${serie.poster_path}`"
           alt="serie poster"
         />
+        <img v-else src="../../assets/img/user.png" />
         <h2>{{ serie.name }}</h2>
         <p>
           <strong>📅:</strong>

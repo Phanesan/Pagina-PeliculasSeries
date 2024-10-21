@@ -134,7 +134,7 @@
             class="actor-item"
             v-for="(actor, index) in cast"
             :key="actor.cast_id"
-            @click="viewActor(actor)"
+            @click="$emit('changePage', 'DetailArtist', { id: actor.id })"
           >
             <img
               v-if="actor.profile_path"
@@ -390,12 +390,6 @@ export default {
         ru: 'Ruso',
       }
       return languageMap[abbr] || abbr
-    },
-    viewActor(actor) {
-      this.$emit('changePage', 'DetailArtist', {
-        actorId: actor.id,
-        actorName: actor.name,
-      })
     },
   },
   mounted() {

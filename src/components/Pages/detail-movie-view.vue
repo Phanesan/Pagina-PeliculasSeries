@@ -76,7 +76,9 @@
             <h2>Géneros</h2>
             <span v-for="(genre, index) in movie.genres" :key="genre.id">
               <button
-                @click="redirectToCategory(genre.id)"
+                @click="
+                  $emit('changePage', 'DetailCategory',{ id: genre.id })
+                "
                 class="genre-button"
               >
                 {{ genre.name }}
@@ -360,9 +362,6 @@ export default {
         .catch(error => {
           console.log(error)
         })
-    },
-    redirectToCategory(genreId) {
-      this.$emit('changePage', 'DetailCategory', { genreId })
     },
     fetchRecommendedMovies(movieId) {
       fetch(

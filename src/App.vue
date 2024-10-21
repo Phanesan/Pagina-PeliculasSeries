@@ -74,22 +74,30 @@ export default {
       this.key += 1
       this.payload = payload
       this.currentPage = page
+      localStorage.setItem('currentPage', page)
+      localStorage.setItem('payloadData', JSON.stringify(payload))
+      document.title = "ANX CINEMA"
     },
     logout() {
       localStorage.removeItem('payload')
       localStorage.removeItem('session_id')
       localStorage.removeItem('user')
+      localStorage.removeItem('currentPage')
       this.changePage('Login')
     },
     goToHome() {
-      this.changePage('Home')
+      this.changePage('Home', {})
     },
   },
   mounted() {
     const token = localStorage.getItem('payload')
 
     if (token !== null) {
-      this.changePage('Home')
+      if(localStorage.getItem('currentPage') !== null && localStorage.getItem('payloadData') !== undefined) {
+        this.changePage(localStorage.getItem('currentPage'), localStorage.getItem('payloadData')? JSON.parse(localStorage.getItem('payloadData')) : {})
+      } else {
+        this.changePage('Login')
+      }
     }
   },
 }

@@ -336,8 +336,7 @@ export default {
           .request(config)
           .then(response => {
             this.seriesData = response.data
-            console.log(this.payload.id)
-            console.log(response.data)
+            document.title = this.seriesData.name
           })
           .catch(error => {
             console.log(error)

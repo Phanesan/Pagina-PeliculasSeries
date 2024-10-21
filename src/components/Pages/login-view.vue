@@ -7,6 +7,10 @@ import { ref } from 'vue'
   <div class="loginForm">
     <h1>Iniciar Sesión</h1>
 
+    <div class="textLogin">
+      <p>Ingresa tu usuario y contraseña de DBMovie</p>
+    </div>
+
     <div class="inputs">
       <div class="label">
         <label for="username">Usuario</label>
@@ -128,7 +132,7 @@ export default {
                     })
 
                   localStorage.setItem('session_id', response.data.session_id)
-                  this.$emit('changePage', 'Home')
+                  this.$emit('changePage', 'Home', {})
                 })
                 .catch(error => {
                   console.log(error)
@@ -166,6 +170,10 @@ export default {
   margin-top: 13vh;
   border-radius: 1rem;
   border: 1px solid var(--color-text);
+
+  .textLogin {
+    text-align: center;
+  }
 
   h1 {
     text-align: center;

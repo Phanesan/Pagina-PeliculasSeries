@@ -20,8 +20,14 @@
               {{ episode.overview || 'Sin sinopsis disponible' }}
             </p>
             <img
+              v-if="episode.still_path"
               :src="getImageUrl(episode.still_path)"
               alt="Imagen del episodio"
+            />
+            <img
+              v-else
+              src="../../assets/img/seriesPlaceHolder.png"
+              alt="Placeholder"
             />
           </div>
           <div class="guest-stars">
@@ -36,11 +42,25 @@
                       class="guest-star"
                     >
                       <img
+                        v-if="star.profile_path"
                         :src="getImageUrl(star.profile_path)"
                         alt="Imagen de la estrella"
-                        @click="goToMovie(star.id)"
+                        @click="
+                          $emit('changePage', 'DetailArtist', { id: star.id })
+                        "
                       />
-                      <p @click="goToMovie(star.id)">{{ star.name }}</p>
+                      <img
+                        v-else
+                        src="../../assets/img/user.png"
+                        alt="Usuario"
+                      />
+                      <p
+                        @click="
+                          $emit('changePage', 'DetailArtist', { id: star.id })
+                        "
+                      >
+                        {{ star.name }}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -86,7 +106,7 @@ export default {
       }
 
       fetch(
-        `https://api.themoviedb.org/3/tv/${this.payload.id}/season/${this.payload.season}?language=en-US`,
+        `https://api.themoviedb.org/3/tv/${this.payload.id}/season/${this.payload.season}?language=es-MX`,
         requestOptions,
       )
         .then(response => response.json())
@@ -147,8 +167,7 @@ p {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-.episode-info,
-.guest-stars {
+.episode-info {
   padding: 10px;
 }
 
@@ -157,22 +176,55 @@ p {
   border-radius: 8px;
 }
 
+.guest-stars {
+  padding: 10px;
+  max-width: 100%;
+}
+
 .guest-stars h4 {
   margin-bottom: 10px;
   font-weight: bold;
 }
 
 .guest-stars-list {
-  overflow-x: auto;
-  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  padding-right: 10px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #232ed1 #121212;
+}
+
+.guest-stars-list::-webkit-scrollbar {
+  width: 20px;
+}
+
+.guest-stars-list::-webkit-scrollbar-track {
+  background: #121212;
+  border-radius: 10px;
+}
+
+.guest-stars-list::-webkit-scrollbar-thumb {
+  background: #232ed1;
+  border-radius: 10px;
+}
+
+.guest-stars-list::-webkit-scrollbar-thumb:hover {
+  background: #3a3a3a;
 }
 
 .guest-star {
-  display: inline-block;
-  margin-right: 20px;
-  text-align: center;
-  transition: transform 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
   cursor: pointer;
+  transition: transform 0.3s;
 }
 
 .guest-star:hover {
@@ -180,11 +232,10 @@ p {
 }
 
 .guest-star img {
-  max-width: 120px;
+  max-width: 100px;
   margin-bottom: 10px;
   border-radius: 8px;
   transition: opacity 0.3s;
-  cursor: pointer;
 }
 
 .guest-star img:hover {

@@ -31,7 +31,7 @@ import DetailCategory from './components/Pages/detail-category-view.vue'
     </div>
   </header>
   <div class="view">
-    <component :is="currentPage" @changePage="changePage" :payload="payload"></component>
+    <component :is="currentPage" @changePage="changePage" :payload="payload" :key="key"></component>
   </div>
 </template>
 
@@ -51,10 +51,12 @@ export default {
     return {
       payload: null,
       currentPage: 'Login',
+      key: 0
     }
   },
   methods: {
     changePage(page, payload) {
+      this.key += 1
       this.payload = payload
       this.currentPage = page
     },

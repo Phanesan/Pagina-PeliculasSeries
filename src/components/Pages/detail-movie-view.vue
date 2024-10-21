@@ -61,7 +61,12 @@
                 v-for="(keyword, index) in keywords"
                 :key="keyword.id"
                 class="keyword"
-                @click="$emit('changePage', 'DetailKeyword', { keywordId: keyword.id, keywordName: keyword.name })"
+                @click="
+                  $emit('changePage', 'DetailKeyword', {
+                    keywordId: keyword.id,
+                    keywordName: keyword.name,
+                  })
+                "
               >
                 {{ keyword.name }}
               </button>
@@ -75,16 +80,16 @@
 
           <div class="rating">
             <h2 for="rating">Tu calificación:</h2>
-            <select v-model="userRating" id="rating">
-              <option disabled value="">Selecciona un rating</option>
+            <select v-model="rating" id="rating">
+              <option disabled value="undefined">Selecciona un rating</option>
               <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
             </select>
             <br />
-            <button class="save-button" @click="saveRating">
-              Guardar calificación
+            <button class="save-button" @click="saveRating(rating)">
+              Guardar rating
             </button>
             <button class="delete-button" @click="deleteRating">
-              Eliminar calificación
+              Eliminar rating
             </button>
           </div>
         </div>
@@ -93,12 +98,13 @@
 
     <div class="movie-cast">
       <h2>Reparto</h2>
-      <div class="carousel-container">
-        <div class="carousel">
+      <div class="scrollable-container">
+        <div class="carousel1">
           <div
             class="actor-item"
             v-for="(actor, index) in cast"
             :key="actor.cast_id"
+            @click="viewActor(actor)"
           >
             <img
               v-if="actor.profile_path"
@@ -118,12 +124,13 @@
 
     <div class="recommended-movies" v-if="recommendedMovies.length > 0">
       <h2>Películas Recomendadas</h2>
-      <div class="recommended-carousel-container">
+      <div class="scrollable-container">
         <div class="recommended-carousel">
           <div
             class="recommended-item"
             v-for="(recommended, index) in recommendedMovies"
             :key="recommended.id"
+            @click="$emit('changePage', 'DetailMovie', { id: recommended.id })"
           >
             <img
               v-if="recommended.poster_path"
@@ -138,19 +145,18 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <p>No hay películas recomendadas disponibles.</p>
-    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'DetailMovieView',
   props: {
     payload: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   data() {
     return {
@@ -159,19 +165,21 @@ export default {
       userRating: '',
       keywords: [],
       recommendedMovies: [],
+      apiKey: import.meta.env.VITE_API_KEY,
+      rating: 'undefined',
     }
   },
   methods: {
     fetchMovieDetails() {
       const movieId = this.payload.id
+      console.log(movieId)
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+        `https://api.themoviedb.org/3/movie/${movieId}?api_key=${this.apiKey}&language=es-LA`,
       )
         .then(response => response.json())
         .then(data => {
           this.movie = data
           document.title = this.movie.title
-          this.loadRating(movieId)
           this.fetchMovieCast(movieId)
           this.fetchMovieKeywords(movieId)
           this.fetchRecommendedMovies(movieId)
@@ -184,7 +192,7 @@ export default {
     },
     fetchMovieCast(movieId) {
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+        `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${this.apiKey}&language=es-LA`,
       )
         .then(response => response.json())
         .then(data => {
@@ -196,7 +204,7 @@ export default {
     },
     fetchMovieKeywords(movieId) {
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/keywords?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+        `https://api.themoviedb.org/3/movie/${movieId}/keywords?api_key=${this.apiKey}&language=es-LA`,
       )
         .then(response => response.json())
         .then(data => {
@@ -209,7 +217,7 @@ export default {
     async fetchMovieTrailer(movieId) {
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=13c164db7b0cbbc91a51acf2fcc65f79`,
+          `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${this.apiKey}`,
         )
         const data = await response.json()
         const trailer = data.results.find(video => video.site === 'YouTube')
@@ -238,40 +246,60 @@ export default {
         alert('No se encontró el tráiler para esta película.')
       }
     },
-    goBack() {
-      window.history.back()
-    },
-    saveRating() {
-      if (this.userRating) {
-        const movieId = this.movie.id
-        localStorage.setItem(`rating_${movieId}`, this.userRating)
-        alert(`Gracias por calificar con ${this.userRating} estrellas.`)
-      } else {
-        alert('Por favor selecciona un rating antes de guardar.')
+    saveRating(n) {
+      const movieId = this.movie.id
+      const sessionId = localStorage.getItem('session_id')
+      if (!sessionId) {
+        alert('No hay sesión activa. Asegúrate de haber iniciado sesión.')
+        return
       }
-    },
-    loadRating(movieId) {
-      const savedRating = localStorage.getItem(`rating_${movieId}`)
-      if (savedRating) {
-        this.userRating = savedRating
-      }
+      const data = JSON.stringify({ value: n })
+      console.log(data)
+      axios
+        .post(
+          `https://api.themoviedb.org/3/movie/${movieId}/rating?session_id=${sessionId}&api_key=${this.apiKey}`,
+          data,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then(response => {
+          console.log(response.data)
+          alert('Tu calificación ha sido guardada.')
+        })
+        .catch(error => {
+          console.error(error)
+        })
     },
     deleteRating() {
-      const movieId = this.movie.id
-      localStorage.removeItem(`rating_${movieId}`)
-      this.userRating = ''
-      alert('Tu calificación ha sido eliminada.')
+      let config = {
+        method: 'delete',
+        maxBodyLength: Infinity,
+        url: `https://api.themoviedb.org/3/movie/${this.movie.id}/rating?session_id=${localStorage.getItem('session_id')}&api_key=${this.apiKey}`,
+        headers: {},
+      }
+
+      axios
+        .request(config)
+        .then(response => {
+          alert('Tu calificación ha sido borrada.')
+          this.rating = 'undefined'
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     redirectToCategory(genreId) {
       this.$emit('changePage', 'DetailCategory', { genreId })
     },
     fetchRecommendedMovies(movieId) {
       fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=13c164db7b0cbbc91a51acf2fcc65f79&language=es-US&page=1`,
+        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${this.apiKey}&language=es-LA&page=1`,
       )
         .then(response => response.json())
         .then(data => {
-          console.log('Películas recomendadas:', data.results)
           this.recommendedMovies = data.results
         })
         .catch(error => {
@@ -293,9 +321,30 @@ export default {
       }
       return languageMap[abbr] || abbr
     },
+    viewActor(actor) {
+      this.$emit('changePage', 'DetailArtist', {
+        actorId: actor.id,
+        actorName: actor.name,
+      })
+    },
   },
   mounted() {
     this.fetchMovieDetails()
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `https://api.themoviedb.org/3/movie/${this.payload.id}/account_states?session_id=${localStorage.getItem('session_id')}&api_key=${this.apiKey}`,
+      headers: {},
+    }
+    axios
+      .request(config)
+      .then(response => {
+        this.rating = response.data.rated.value
+      })
+      .catch(error => {
+        console.log(error)
+      })
   },
 }
 </script>
@@ -318,6 +367,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  margin-left: 20px;
+  margin-right: 100px;
 }
 
 .movie-details {
@@ -330,14 +381,23 @@ body {
   margin-left: 40px;
 }
 
+.movie-cast {
+  max-width: 100%;
+}
+
 .movie-poster {
   width: 400px;
   height: auto;
   margin-right: 20px;
+  border-radius: 8px;
 }
 
 .movie-info {
   flex-grow: 1;
+}
+
+.movie-overview {
+  text-align: justify;
 }
 
 .movie-title {
@@ -418,7 +478,8 @@ body {
   cursor: pointer;
   border-radius: 8px;
   margin-bottom: 5px;
-  margin-top: 10px;
+  margin-top: 15px;
+  margin-left: 20px;
 }
 
 .carousel-container {
@@ -427,8 +488,9 @@ body {
   overflow-x: auto;
 }
 
-.carousel {
+.carousel1 {
   display: flex;
+  width: 100vw;
 }
 
 .actor-item {
@@ -445,12 +507,10 @@ body {
   border-radius: 8px;
 }
 
-.actor-name {
-  font-weight: bold;
-}
-
 .recommended-carousel-container {
-  margin: 30px;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 30px;
   border-radius: 8px;
   overflow-x: auto;
 }
@@ -474,6 +534,35 @@ body {
 .recommended-movies > h2 {
   margin-top: 20px;
   margin-left: 40px;
+}
+
+.scrollable-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  position: relative;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-bottom: 40px;
+  border-radius: 8px;
+}
+
+.scrollable-container::-webkit-scrollbar {
+  height: 12px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background-color: #e0e0e0;
+  border-radius: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background-color: #8888886e;
+  border-radius: 4px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--oxford-blue);
 }
 
 select {

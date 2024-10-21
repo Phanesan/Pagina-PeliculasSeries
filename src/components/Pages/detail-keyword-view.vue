@@ -3,31 +3,39 @@
     <h1 id="keyword-title">{{ keywordName }}</h1>
 
     <h2 class="section-title">Películas</h2>
-    <div id="movies-carousel" class="carousel">
-      <div
-        class="card"
-        v-for="movie in movies"
-        :key="movie.id"
-        @click="viewMovie(movie)"
-      >
-        <img
-          :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
-          alt="movie poster"
-        />
-        <h2>{{ movie.title }}</h2>
-        <p>
-          <strong>📅:</strong>
-          {{ movie.release_date }}
-        </p>
-        <p>
-          <strong>🗺️:</strong>
-          {{ getLanguageFullName(movie.original_language) }}
-        </p>
+    <div class="scrollable-container">
+      <div id="movies-carousel" class="carousel">
+        <div v-if="movies.length === 0" class="no-results">
+          <p>No se encontraron películas.</p>
+        </div>
+        <div
+          class="card"
+          v-for="movie in movies"
+          :key="movie.id"
+          @click="viewMovie(movie)"
+        >
+          <img
+            :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
+            alt="movie poster"
+          />
+          <h2>{{ movie.title }}</h2>
+          <p>
+            <strong>📅:</strong>
+            {{ movie.release_date }}
+          </p>
+          <p>
+            <strong>🗺️:</strong>
+            {{ getLanguageFullName(movie.original_language) }}
+          </p>
+        </div>
       </div>
     </div>
 
-    <h2 class="section-title">Series de TV</h2>
+    <h2 class="section-title">Series</h2>
     <div id="series-carousel" class="carousel">
+      <div v-if="series.length === 0" class="no-results">
+        <p>No se encontraron series.</p>
+      </div>
       <div
         class="card"
         v-for="serie in series"
@@ -155,7 +163,7 @@ export default {
 
 .carousel {
   display: flex;
-  overflow-x: auto; /* Cambiado para permitir desplazamiento */
+  overflow-x: auto;
   gap: 20px;
   padding: 20px;
   width: 100%;
@@ -174,16 +182,16 @@ export default {
   transition: transform 0.2s ease;
   display: flex;
   flex-direction: column;
-  height: 600px; /* Limita la altura de las cartas */
+  height: 600px;
 }
 
 .card:hover {
-  transform: scale(1.005);
+  transform: scale(1.05);
 }
 
 .card img {
   width: 100%;
-  height: 80%; /* Ocupa el 80% de la altura de la carta */
+  height: 80%;
   object-fit: fill;
 }
 
@@ -200,5 +208,42 @@ export default {
   text-align: justify;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.no-results {
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.scrollable-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  position: relative;
+  margin-left: 40px;
+  margin-right: 40px;
+  border-radius: 8px;
+}
+
+.scrollable-container::-webkit-scrollbar {
+  height: 12px;
+  margin-bottom: -50px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background-color: #e0e0e0;
+  border-radius: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background-color: #8888886e;
+  border-radius: 4px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--oxford-blue);
 }
 </style>

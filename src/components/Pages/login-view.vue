@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     sendLogin() {
-      const api_key = import.meta.env.VITE_API_KEY;
+      const api_key = import.meta.env.VITE_API_KEY
 
       let config = {
         method: 'get',
@@ -109,6 +109,24 @@ export default {
               axios
                 .request(config)
                 .then(response => {
+
+                  let config = {
+                    method: 'get',
+                    maxBodyLength: Infinity,
+                    url: `https://api.themoviedb.org/3/account?api_key=${api_key}&session_id=${response.data.session_id}`,
+                    headers: {},
+                  }
+
+                  axios
+                    .request(config)
+                    .then(response => {
+                      console.log(response.data)
+                      localStorage.setItem('user', JSON.stringify(response.data))
+                    })
+                    .catch(error => {
+                      console.log(error)
+                    })
+
                   localStorage.setItem('session_id', response.data.session_id)
                   this.$emit('changePage', 'Home')
                 })

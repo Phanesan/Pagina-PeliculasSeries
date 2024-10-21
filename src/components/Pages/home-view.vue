@@ -1,6 +1,6 @@
 <template>
   <p>Home</p>
-  <button @click="$emit('changePage', 'DetailMovie',{ id: 550 })">Detalles movie</button>
+  <button @click="$emit('changePage', 'DetailMovie',{ id: 8363 })">Detalles movie</button>
 </template>
 
 <script>

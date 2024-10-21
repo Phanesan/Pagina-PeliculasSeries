@@ -7,10 +7,12 @@
     <div class="movie-content">
       <div class="movie-details">
         <img
+          v-if="movie.poster_path"
           class="movie-poster"
           :src="`https://www.themoviedb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`"
           alt="movie poster"
         />
+        <img v-else src="../../assets/img/movie.png" class="movie-poster" alt="">
         <div class="movie-info">
           <h1 class="movie-title">{{ movie.title }}</h1>
           <h3 class="movie-tagline">{{ movie.tagline }}</h3>

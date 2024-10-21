@@ -19,7 +19,9 @@ import DetailCategory from './components/Pages/detail-category-view.vue'
         onclick="updatemenu()"
       /><label></label>
       <ul>
-        <li><a>Home</a></li>
+        <li v-if="currentPage !== 'Login'">
+          <a @click="goToHome">Home</a>
+        </li>
         <li>
           <div class="logout-section" v-if="currentPage !== 'Login'">
             <button class="Btn" @click="logout">
@@ -76,14 +78,18 @@ export default {
     logout() {
       localStorage.removeItem('payload')
       localStorage.removeItem('session_id')
+      localStorage.removeItem('user')
       this.changePage('Login')
+    },
+    goToHome() {
+      this.changePage('Home')
     },
   },
   mounted() {
     const token = localStorage.getItem('payload')
 
     if (token !== null) {
-      this.changePage('DetailSeason')
+      this.changePage('Home')
     }
   },
 }
@@ -118,7 +124,7 @@ header {
 }
 
 .view {
-  padding-top: 4.28rem !important;
+  padding-top: 3.1rem !important;
 }
 
 .Btn {
@@ -222,6 +228,7 @@ header {
   text-decoration: none;
   color: #ffffff;
   font-size: 16px;
+  cursor: pointer;
 }
 #menu a.dropdown-arrow:after {
   content: '\23F7';

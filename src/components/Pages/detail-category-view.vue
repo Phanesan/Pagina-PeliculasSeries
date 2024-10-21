@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     getItemsByCategory() {
-      const categoryId = 28;
+      const categoryId = this.payload.id;
       const endpoint = this.mediaType === 'movie' ? 'discover/movie' : 'discover/tv';
 
       fetch(`https://api.themoviedb.org/3/${endpoint}?with_genres=${categoryId}&sort_by=${this.popularityFilter}&api_key=b4014e28c8f91a3d85b70da33bb5afb2&page=${this.currentPage}`)
@@ -131,8 +131,6 @@ export default {
   },
 }
 </script>
-
-
 
 <style>
 .genre-filter {

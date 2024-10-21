@@ -49,7 +49,7 @@
               :src="'https://www.themoviedb.org/t/p/w200/' + item.poster_path" :alt="item.title || item.name"
                 class="movie-poster">
                 <img v-else src="../../assets/img/movie.png" class="poster-image" />
-              <p @click="$emit('changePage', 'DetailKeyword', { id: item.id })">{{ item.title || item.name }}</p>
+              <p @click="$emit('changePage', 'DetailMovie', { id: item.id })">{{ item.title || item.name }}</p>
             </div>
           </div>
         </div>

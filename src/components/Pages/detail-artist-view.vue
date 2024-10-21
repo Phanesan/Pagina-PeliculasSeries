@@ -164,8 +164,8 @@ export default {
   color: #e0e0e0;
   font-family: Arial, sans-serif;
   overflow-x: hidden;
-}
 
+  
 .artist-info {
   display: flex;
 }
@@ -374,5 +374,7 @@ export default {
   font-weight: bold;
   padding-top: 30px;
 }
+}
+
 
 </style>

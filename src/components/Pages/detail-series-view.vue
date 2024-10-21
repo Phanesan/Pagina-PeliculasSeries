@@ -137,9 +137,9 @@ import axios from 'axios'
         <div class="scrollable-container">
           <div
             class="season-item"
-            v-for="season in seriesData.seasons"
+            v-for="(season, index) in seriesData.seasons"
             :key="season.id"
-            @click="$emit('changePage', 'DetailSeason', { id: season.id })"
+            @click="$emit('changePage', 'DetailSeason', { id: seriesData.id, season: index })"
           >
             <img
               v-if="season.poster_path"

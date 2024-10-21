@@ -1,5 +1,4 @@
 <template>
-
   <div class="artist-details-container">
     <div class="artist-info">
       <div class="left-column">
@@ -79,7 +78,6 @@ export default {
       type: Object
     }
   },
-
   data() {
     return {
       actor: {},
@@ -104,7 +102,7 @@ export default {
 
   methods: {
     getActorDetails() {
-      const actorId = new URLSearchParams(window.location.search).get('id');
+      const actorId = this.payload.id;
       fetch(`https://api.themoviedb.org/3/person/${actorId}?api_key=b4014e28c8f91a3d85b70da33bb5afb2`)
         .then(response => response.json())
         .then(data => {

@@ -8,60 +8,70 @@
           class="card"
           v-for="(popularMovie, index) in popularMovies"
           :key="index"
-          @click="goToMovie(popularMovie.id)"
         >
           <img
             :src="getImageUrl(popularMovie.poster_path)"
             alt="Popular Movie Poster"
+            @click="$emit('changePage', 'DetailMovie', { id })"
           />
           <div>
-            <h3>{{ popularMovie.title }}</h3>
+            <h3 @click="$emit('changePage', 'DetailMovie', { id })">
+              {{ popularMovie.title }}
+            </h3>
             <p>Fecha de estreno</p>
             <p>{{ popularMovie.release_date }}</p>
             <p>Popularidad</p>
             <p>{{ popularMovie.vote_average.toFixed(1) }}</p>
           </div>
-          <a href="#" class="button">Ver Detalles</a>
+          <a class="button" @click="$emit('changePage', 'DetailMovie', { id })"
+            >Ver Detalles</a
+          >
         </div>
       </div>
 
       <h1>Lo más popular</h1>
       <div class="card-container" ref="carousel">
-        <div
-          class="card"
-          v-for="(movie, index) in topRatedMovies"
-          :key="index"
-          @click="goToMovie(movie.id)"
-        >
-          <img :src="getImageUrl(movie.poster_path)" alt="Movie Poster" />
+        <div class="card" v-for="(movie, index) in topRatedMovies" :key="index">
+          <img
+            :src="getImageUrl(movie.poster_path)"
+            alt="Movie Poster"
+            @click="$emit('changePage', 'DetailMovie', { id })"
+          />
           <div>
-            <h3>{{ movie.title }}</h3>
+            <h3 @click="$emit('changePage', 'DetailMovie', { id })">
+              {{ movie.title }}
+            </h3>
             <p>Fecha de estreno</p>
             <p>{{ movie.release_date }}</p>
             <p>Popularidad</p>
             <p>{{ movie.vote_average.toFixed(1) }}</p>
           </div>
-          <a href="#" class="button">Ver Detalles</a>
+          <a class="button" @click="$emit('changePage', 'DetailMovie', { id })"
+            >Ver Detalles</a
+          >
         </div>
       </div>
 
       <h1>Ver Gratis</h1>
       <div class="card-container" ref="carousel">
-        <div
-          class="card"
-          v-for="(movie, index) in freeWatch"
-          :key="index"
-          @click="goToMovie(movie.id)"
-        >
-          <img :src="getImageUrl(movie.poster_path)" alt="Movie Poster" />
+        <div class="card" v-for="(movie, index) in freeWatch" :key="index">
+          <img
+            :src="getImageUrl(movie.poster_path)"
+            alt="Movie Poster"
+            @click="$emit('changePage', 'DetailMovie', { id })"
+          />
           <div>
-            <h3>{{ movie.title }}</h3>
+            <h3 @click="$emit('changePage', 'DetailMovie', { id })">
+              {{ movie.title }}
+            </h3>
             <p>Fecha de estreno</p>
             <p>{{ movie.release_date }}</p>
             <p>Popularidad</p>
             <p>{{ movie.vote_average.toFixed(1) }}</p>
           </div>
-          <a href="#" class="button">Ver Detalles</a>
+          <a class="button" @click="$emit('changePage', 'DetailMovie', { id })"
+            >Ver Detalles</a
+          >
         </div>
       </div>
 
@@ -71,17 +81,24 @@
           class="card"
           v-for="(tvShow, index) in topRatedTVShows"
           :key="index"
-          @click="goToMovie(tvShow.id)"
         >
-          <img :src="getImageUrl(tvShow.poster_path)" alt="TV Show Poster" />
+          <img
+            :src="getImageUrl(tvShow.poster_path)"
+            alt="TV Show Poster"
+            @click="$emit('changePage', 'DetailSeries', { id })"
+          />
           <div>
-            <h3>{{ tvShow.name }}</h3>
+            <h3 @click="$emit('changePage', 'DetailSeries', { id })">
+              {{ tvShow.name }}
+            </h3>
             <p>Fecha de estreno</p>
             <p>{{ tvShow.first_air_date }}</p>
             <p>Popularidad</p>
             <p>{{ tvShow.vote_average.toFixed(1) }}</p>
           </div>
-          <a href="#" class="button">Ver Detalles</a>
+          <a class="button" @click="$emit('changePage', 'DetailSeries', { id })"
+            >Ver Detalles</a
+          >
         </div>
       </div>
     </div>
@@ -105,10 +122,6 @@ export default {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
         : 'https://via.placeholder.com/150'
-    },
-
-    goToMovie(id) {
-      window.location.href = `movie.html?id=${id}`
     },
 
     fetchMovies() {
@@ -270,12 +283,20 @@ h1 {
 .card img {
   max-width: 100%;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .card h3 {
   font-weight: bold;
   margin-top: 10px;
   margin-bottom: 5px;
+  cursor: default;
+}
+
+.card h3:hover {
+  cursor: pointer;
+  color: rgb(3, 22, 97);
+  text-decoration: underline;
 }
 
 .card p {
@@ -290,6 +311,7 @@ h1 {
   color: white;
   text-decoration: none;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .button:hover {
@@ -299,7 +321,7 @@ h1 {
 .banner {
   width: 100%;
   height: auto;
-  max-height: 300px;
+  max-height: 500px;
   object-fit: cover;
   display: block;
   margin: 0 auto;
